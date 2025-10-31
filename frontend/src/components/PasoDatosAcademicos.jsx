@@ -18,8 +18,9 @@ export default function PasoDatosAcademicos({
   const [carreras, setCarreras] = useState([]);
   const [asignaturas, setAsignaturas] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [errores, setErrores] = useState({});
 
-  // 🔹 Cargar modalidades y grupos al inicio
+  // Cargar modalidades y grupos al inicio
   useEffect(() => {
     const fetchBaseData = async () => {
       try {
@@ -30,13 +31,13 @@ export default function PasoDatosAcademicos({
         setModalidades(resModalidades.data);
         setGrupos(resGrupos.data);
       } catch (error) {
-        console.error("❌ Error al cargar modalidades y grupos:", error);
+        console.error("Error al cargar modalidades y grupos:", error);
       }
     };
     fetchBaseData();
   }, []);
 
-  // 🔹 Cuando se selecciona un grupo, cargar carreras y asignaturas
+  // Cargar carreras y asignaturas al seleccionar grupo
   useEffect(() => {
     const fetchDetalles = async () => {
       if (!formData.grupoId) {
@@ -53,7 +54,7 @@ export default function PasoDatosAcademicos({
         setCarreras(resCarreras.data);
         setAsignaturas(resAsignaturas.data);
       } catch (error) {
-        console.error("❌ Error al cargar carreras/asignaturas:", error);
+        console.error("Error al cargar carreras/asignaturas:", error);
       } finally {
         setLoading(false);
       }
@@ -61,9 +62,27 @@ export default function PasoDatosAcademicos({
     fetchDetalles();
   }, [formData.grupoId]);
 
-  // 🔹 Manejar cambios del formulario
+  const validarCampo = (name, value) => {
+    let error = "";
+    switch (name) {
+      case "modalidadId":
+        if (!value) error = "Debe seleccionar una modalidad";
+        break;
+      case "grupoId":
+        if (!value) error = "Debe seleccionar un grupo";
+        break;
+      case "carreraPrincipalId":
+        if (!value) error = "Debe seleccionar una carrera principal";
+        break;
+      default:
+        break;
+    }
+    setErrores((prev) => ({ ...prev, [name]: error }));
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    validarCampo(name, value);
 
     switch (name) {
       case "modalidadId":
@@ -74,6 +93,9 @@ export default function PasoDatosAcademicos({
           ...formData,
           modalidadId: Number(value),
           modalidadNombre: modalidadSeleccionada?.nombre || "",
+          grupoId: "",
+          carreraPrincipalId: "",
+          carreraSecundariaId: "",
         });
         break;
 
@@ -111,30 +133,36 @@ export default function PasoDatosAcademicos({
     }
   };
 
+  const formValido =
+    formData.modalidadId &&
+    formData.grupoId &&
+    formData.carreraPrincipalId &&
+    Object.values(errores).every((e) => !e);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.modalidadId || !formData.grupoId || !formData.carreraPrincipalId) {
-      alert("Por favor, completa los campos obligatorios.");
-      return;
+    if (formValido) {
+      onNext();
+    } else {
+      alert("Por favor, completa todos los campos obligatorios.");
     }
-    onNext();
   };
 
   return (
     <div className="step-container">
-      <h2>🎓 Datos Académicos</h2>
+      <h2>Datos Académicos</h2>
       <p className="subtitle">
         Selecciona la modalidad, grupo y carrera a la que deseas postularte.
       </p>
 
-      <form className="form-grid" onSubmit={handleSubmit}>
+      <form className="form-grid" onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label>Modalidad:</label>
           <select
             name="modalidadId"
             value={formData.modalidadId || ""}
             onChange={handleChange}
+            className={errores.modalidadId ? "error" : "success"}
             required
           >
             <option value="">Seleccione modalidad</option>
@@ -144,6 +172,9 @@ export default function PasoDatosAcademicos({
               </option>
             ))}
           </select>
+          {errores.modalidadId && (
+            <span className="error-text">{errores.modalidadId}</span>
+          )}
         </div>
 
         <div className="form-group">
@@ -152,6 +183,7 @@ export default function PasoDatosAcademicos({
             name="grupoId"
             value={formData.grupoId || ""}
             onChange={handleChange}
+            className={errores.grupoId ? "error" : "success"}
             required
           >
             <option value="">Seleccione grupo</option>
@@ -161,47 +193,55 @@ export default function PasoDatosAcademicos({
               </option>
             ))}
           </select>
+          {errores.grupoId && (
+            <span className="error-text">{errores.grupoId}</span>
+          )}
         </div>
 
         {carreras.length > 0 && (
-          <div className="form-group">
-            <label>Carrera Principal:</label>
-            <select
-              name="carreraPrincipalId"
-              value={formData.carreraPrincipalId || ""}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Seleccione carrera principal</option>
-              {carreras.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+          <>
+            <div className="form-group">
+              <label>Carrera Principal:</label>
+              <select
+                name="carreraPrincipalId"
+                value={formData.carreraPrincipalId || ""}
+                onChange={handleChange}
+                className={errores.carreraPrincipalId ? "error" : "success"}
+                required
+              >
+                <option value="">Seleccione carrera principal</option>
+                {carreras.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nombre}
+                  </option>
+                ))}
+              </select>
+              {errores.carreraPrincipalId && (
+                <span className="error-text">{errores.carreraPrincipalId}</span>
+              )}
+            </div>
 
-        {carreras.length > 0 && (
-          <div className="form-group">
-            <label>Carrera Secundaria (opcional):</label>
-            <select
-              name="carreraSecundariaId"
-              value={formData.carreraSecundariaId || ""}
-              onChange={handleChange}
-            >
-              <option value="">Seleccione segunda opción</option>
-              {carreras.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
+            <div className="form-group">
+              <label>Carrera Secundaria (opcional):</label>
+              <select
+                name="carreraSecundariaId"
+                value={formData.carreraSecundariaId || ""}
+                onChange={handleChange}
+                className="success"
+              >
+                <option value="">Seleccione segunda opción</option>
+                {carreras.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
         )}
 
         {loading ? (
-          <p style={{ color: "#007bff" }}>Cargando asignaturas...</p>
+          <p className="loading-text">Cargando asignaturas...</p>
         ) : (
           asignaturas.length > 0 && (
             <div className="form-group asignaturas">
@@ -221,7 +261,7 @@ export default function PasoDatosAcademicos({
           <button type="button" className="btn-back" onClick={onBack}>
             ← Atrás
           </button>
-          <button type="submit" className="btn-next">
+          <button type="submit" className="btn-next" disabled={!formValido}>
             Siguiente →
           </button>
         </div>

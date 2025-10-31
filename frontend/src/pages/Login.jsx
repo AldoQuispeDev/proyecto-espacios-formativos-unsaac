@@ -37,16 +37,19 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login-header">
-        <h1>SeedProd</h1>
-        <h2>Login</h2>
+        <h1>Academia Preuniversitaria</h1>
+        <h2>Iniciar Sesión</h2>
         <p className="signup-link">
-          Don't have an account? <a href="#get-seedprod">Get SeedProd Now</a>
+          ¿No tienes una cuenta?{" "}
+          <Link to="/registro" className="register-link">
+            Regístrate aquí
+          </Link>
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group">
-          <label htmlFor="email">Email Address</label>
+          <label htmlFor="email">Correo electrónico</label>
           <input
             id="email"
             type="email"
@@ -57,7 +60,7 @@ export default function Login() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Contraseña</label>
           <input
             id="password"
             type="password"
@@ -75,14 +78,14 @@ export default function Login() {
               onChange={(e) => setRememberMe(e.target.checked)}
             />
             <span className="checkmark"></span>
-            Remember Me
+            Recuérdame
           </label>
         </div>
 
-        <button type="submit" className="login-btn">Log In</button>
+        <button type="submit" className="login-btn">Iniciar Sesión</button>
 
         <div className="forgot-password">
-          <a href="#forgot">Secret Your Password?</a>
+          <a href="#forgot">¿Olvidaste tu contraseña?</a>
         </div>
       </form>
 
@@ -90,11 +93,10 @@ export default function Login() {
 
       <div className="login-footer">
         <p className="copyright">
-          Copyright © 2019 SeedProd, LLC. SeedTraff™ is a trademark of SeedProd, LLC.
+          © {new Date().getFullYear()} Academia Preuniversitaria - Todos los derechos reservados.
         </p>
         <div className="footer-links">
-          <a href="https://www.seedprod.com">www.seedprod.com</a>
-          <a href="#privacy">Privacy Policy</a>
+          <a href="#privacy">Política de privacidad</a>
         </div>
       </div>
     </div>

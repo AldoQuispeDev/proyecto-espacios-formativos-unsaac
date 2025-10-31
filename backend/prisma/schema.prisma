@@ -1,5 +1,5 @@
 //
-// 🔧 CONFIGURACIÓN DE PRISMA
+// CONFIGURACIÓN DE PRISMA
 //
 generator client {
   provider = "prisma-client-js"
@@ -11,7 +11,7 @@ datasource db {
 }
 
 //
-// 🧠 TABLA PRINCIPAL: USUARIO DE REGISTRO
+// TABLA PRINCIPAL: USUARIO DE REGISTRO
 //
 model Usuario {
   id          Int          @id @default(autoincrement())
@@ -29,7 +29,7 @@ model Usuario {
 }
 
 //
-// 🧩 ENUM: ROLES DISPONIBLES
+// ENUM: ROLES DISPONIBLES
 //
 enum Rol {
   ADMIN

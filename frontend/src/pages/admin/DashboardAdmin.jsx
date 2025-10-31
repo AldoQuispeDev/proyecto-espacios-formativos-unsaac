@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
+import "./DashboardAdmin.css";
 import Layout from "../../components/Layout";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -7,31 +8,28 @@ export default function DashboardAdmin() {
   const navigate = useNavigate();
   const { cerrarSesion } = useContext(AuthContext);
 
-  // 🔹 Función para ir a la sección de validación
+  // Redirigir a la sección de validación de matrículas
   const irAValidar = () => {
     navigate("/admin/validarMatricula");
   };
 
   return (
-    <Layout title="⚙️ Panel del Administrador" onLogout={cerrarSesion}>
-      <div className="text-gray-700">
-        <p className="mb-4">
-          Bienvenido al panel administrativo. Desde aquí podrás gestionar todo
-          el proceso académico de la academia:
+    <Layout title="Panel del Administrador" onLogout={cerrarSesion}>
+      <div className="dashboard-container">
+        <h2 className="dashboard-title">Bienvenido al Panel Administrativo</h2>
+        <p className="dashboard-text">
+          Desde aquí podrás gestionar todo el proceso académico de la academia:
         </p>
 
-        <ul className="list-disc pl-6 mb-6 space-y-1">
+        <ul className="dashboard-list">
           <li>Revisar y validar matrículas pendientes</li>
           <li>Ver estudiantes registrados</li>
           <li>Administrar modalidades, grupos y carreras</li>
         </ul>
 
-        <div className="flex justify-center">
-          <button
-            onClick={irAValidar}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition"
-          >
-            📋 Ir a Validar Matrículas
+        <div className="dashboard-actions">
+          <button onClick={irAValidar} className="btn-primary">
+            Ir a Validar Matrículas
           </button>
         </div>
       </div>

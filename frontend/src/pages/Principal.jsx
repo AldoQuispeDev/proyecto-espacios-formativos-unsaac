@@ -1,19 +1,18 @@
 import React from "react";
 import "./Principal.css";
 import logo from "../assets/logo.jpg";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useNavigate } from "react-router-dom";
 
 export default function Principal() {
-  const navigate = useNavigate(); // Inicializa el hook
+  const navigate = useNavigate();
 
-  //Función para redirigir
   const irAMatricula = () => {
     navigate("/matricula");
   };
 
   return (
     <div className="principal-container">
-      {/*NAVBAR */}
+      {/* NAVBAR */}
       <header className="navbar">
         <div className="logo">
           <img src={logo} alt="Logo Academia" />
@@ -27,14 +26,12 @@ export default function Principal() {
           <a href="#">Blog</a>
           <a href="#">Contacto</a>
         </nav>
-
-        {/*Botón que redirige */}
         <button className="btn-matricula" onClick={irAMatricula}>
           Matricúlate en línea
         </button>
       </header>
 
-      {/*SECCIÓN PRINCIPAL */}
+      {/* SECCIÓN PRINCIPAL */}
       <main className="hero-section">
         <div className="hero-text">
           <h1>
@@ -51,13 +48,13 @@ export default function Principal() {
 
         <div className="hero-image">
           <img
-            src="https://i.ibb.co/d0GLx8C/estudiante-pitagoras.jpg"
-            alt="Estudiante estudiando"
-          />
+              src="../../public/academia-pre-universitaria.jpg"
+              alt="Academia preuniversitaria"
+            />
         </div>
       </main>
 
-      {/* 🔹 SECCIÓN DE INFORMACIÓN */}
+      {/* SECCIÓN DE INFORMACIÓN */}
       <section className="info-section">
         <h2>¿Por qué elegirnos?</h2>
         <div className="info-cards">
@@ -69,13 +66,13 @@ export default function Principal() {
             </p>
           </div>
           <div className="card">
-            <h3>🎯 Preparación Personalizada</h3>
+            <h3>Preparación Personalizada</h3>
             <p>
               Recibe asesorías y simulacros adaptados a tu ritmo de aprendizaje.
             </p>
           </div>
           <div className="card">
-            <h3>🏆 Resultados Comprobados</h3>
+            <h3>Resultados Comprobados</h3>
             <p>
               Nuestros alumnos destacan cada año en los primeros puestos de
               admisión universitaria.
@@ -84,7 +81,7 @@ export default function Principal() {
         </div>
       </section>
 
-      {/* 🔹 FOOTER */}
+      {/* FOOTER */}
       <footer className="footer">
         <p>© 2025 Academia Preuniversitaria. Todos los derechos reservados.</p>
       </footer>

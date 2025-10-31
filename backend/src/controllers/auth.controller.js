@@ -20,13 +20,13 @@ export async function login(req, res) {
     const token = data?.token;
 
     if (token) {
-      // ✅ Crear cookie desde el BACKEND (dominio del servidor)
+      //  Crear cookie desde el BACKEND (dominio del servidor)
       res.cookie("token", token, {
         httpOnly: true,
-        secure: false, // ⚠️ cambiar a true en producción (HTTPS)
+        secure: false, 
         sameSite: "lax",
         path: "/",
-        domain: "localhost", // 👈 agrega esto para asegurar compatibilidad
+        domain: "localhost", 
         maxAge: 24 * 60 * 60 * 1000, // 1 día
       });
       console.log("🍪 Cookie JWT creada correctamente en backend");
