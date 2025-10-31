@@ -1,0 +1,95 @@
+.matricula-container {
+  font-family: "Poppins", sans-serif;
+  background-color: #f7f9fc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.matricula-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0033a0;
+  color: white;
+  padding: 15px 40px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.matricula-header h2 {
+  margin: 0;
+}
+
+.bienvenida {
+  margin-right: 15px;
+  font-weight: 500;
+}
+
+.btn-cerrar {
+  background-color: #ff4d4d;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.btn-cerrar:hover {
+  background-color: #e60000;
+}
+
+.matricula-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
+}
+
+.matricula-form {
+  background: white;
+  padding: 30px 50px;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  text-align: center;
+}
+
+.matricula-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #0033a0;
+}
+
+.matricula-form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.btn-enviar {
+  background-color: #0033a0;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn-enviar:hover {
+  background-color: #0056d6;
+}
+
+.mensaje {
+  margin-top: 20px;
+  font-weight: 500;
+  color: #444;
+}

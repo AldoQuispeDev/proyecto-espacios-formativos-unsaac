@@ -1,0 +1,142 @@
+//
+// 🔧 CONFIGURACIÓN DE PRISMA
+//
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+//
+// 🧠 TABLA PRINCIPAL: USUARIO DE REGISTRO
+//
+model Usuario {
+  id          Int          @id @default(autoincrement())
+  nombre      String
+  apellidoP   String
+  apellidoM   String
+  correo      String       @unique
+  password    String
+  rol         Rol          @default(USUARIO)
+  activo      Boolean      @default(true)
+  creadoEn    DateTime     @default(now())
+
+  // Relación 1:1 con Estudiante
+  estudiante  Estudiante?
+}
+
+//
+// 🧩 ENUM: ROLES DISPONIBLES
+//
+enum Rol {
+  ADMIN
+  DOCENTE
+  ESTUDIANTE
+  USUARIO
+}
+
+//
+// 🎓 TABLA: ESTUDIANTE
+//
+model Estudiante {
+  id                Int           @id @default(autoincrement())
+  usuarioId         Int           @unique
+  usuario           Usuario       @relation(fields: [usuarioId], references: [id])
+  
+  nombre            String
+  apellidoPaterno   String
+  apellidoMaterno   String
+  dni               String        @unique
+  fechaNacimiento   DateTime
+  telefono          String
+  nombreApoderado   String?
+  telefonoApoderado String?
+  matriculas        Matricula[]
+  createdAt         DateTime      @default(now())
+}
+
+//
+// 🏫 TABLA: MODALIDAD (Ordinario, Primera Oportunidad, etc.)
+//
+model Modalidad {
+  id          Int          @id @default(autoincrement())
+  nombre      String       @unique
+  grupos      Grupo[]
+  matriculas  Matricula[]
+}
+
+//
+// 🧩 TABLA: GRUPO (A, B, C, D)
+//
+model Grupo {
+  id           Int           @id @default(autoincrement())
+  nombre       String
+  modalidadId  Int?
+  modalidad    Modalidad?     @relation(fields: [modalidadId], references: [id])
+  carreras     Carrera[]
+  asignaturas  Asignatura[]
+  matriculas   Matricula[]
+}
+
+//
+// 🎓 TABLA: CARRERA
+//
+model Carrera {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  grupoId   Int
+  grupo     Grupo      @relation(fields: [grupoId], references: [id])
+
+  // 🔁 Relaciones inversas con Matricula
+  matriculasPrincipal  Matricula[] @relation("Principal")
+  matriculasSecundaria Matricula[] @relation("Secundaria")
+}
+
+
+
+//
+// 📚 TABLA: ASIGNATURA
+//
+model Asignatura {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  preguntas Int
+  grupoId   Int
+  grupo     Grupo      @relation(fields: [grupoId], references: [id])
+}
+
+
+//MATRICULA
+model Matricula {
+  id                   Int         @id @default(autoincrement())
+
+  // 🔗 Relaciones
+  estudianteId         Int?
+  estudiante           Estudiante?  @relation(fields: [estudianteId], references: [id])
+  grupo                Grupo        @relation(fields: [grupoId], references: [id])
+  grupoId              Int
+  modalidad            Modalidad    @relation(fields: [modalidadId], references: [id])
+  modalidadId          Int
+  carreraPrincipal     Carrera      @relation("Principal", fields: [carreraPrincipalId], references: [id])
+  carreraPrincipalId   Int
+  carreraSecundaria    Carrera?     @relation("Secundaria", fields: [carreraSecundariaId], references: [id])
+  carreraSecundariaId  Int?
+
+  // 🧾 Campos adicionales
+  tipoPago             String
+  comprobanteUrl       String?
+  estado               String       @default("PENDIENTE")
+  createdAt            DateTime     @default(now())
+
+  // 🧍 Campos temporales
+  nombre              String?
+  apellidoPaterno     String?
+  apellidoMaterno     String?
+  dni                 String?
+  telefono            String?
+  nombreApoderado     String?
+  telefonoApoderado   String?
+}
