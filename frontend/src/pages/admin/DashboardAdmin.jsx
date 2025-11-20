@@ -1,38 +1,39 @@
+// src/pages/admin/DashboardAdmin.jsx
+
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import "./DashboardAdmin.css";
-import Layout from "../../components/Layout";
-import { AuthContext } from "../../context/AuthContext";
+import AdminSidebarLayout from "../../components/AdminSidebarLayout";
+
+const MODULOS = [
+  { id: 1, title: "Validación de Matrículas", description: "Revisa, aprueba o rechaza los comprobantes de pago de los nuevos estudiantes.", path: "/admin/validarMatricula", icon: "📝" },
+  { id: 2, title: "Gestión de Docentes", description: "Crea, edita y desactiva las fichas de los profesores y personal administrativo.", path: "/admin/docentes", icon: "👨‍🏫" },
+  { id: 3, title: "Catálogos Académicos", description: "Administra las Modalidades, Grupos, Carreras y Asignaturas.", path: "/admin/catalogos", icon: "📚" },
+];
 
 export default function DashboardAdmin() {
   const navigate = useNavigate();
-  const { cerrarSesion } = useContext(AuthContext);
-
-  // Redirigir a la sección de validación de matrículas
-  const irAValidar = () => {
-    navigate("/admin/validarMatricula");
-  };
 
   return (
-    <Layout title="Panel del Administrador" onLogout={cerrarSesion}>
-      <div className="dashboard-container">
-        <h2 className="dashboard-title">Bienvenido al Panel Administrativo</h2>
-        <p className="dashboard-text">
-          Desde aquí podrás gestionar todo el proceso académico de la academia:
-        </p>
+    <AdminSidebarLayout title="Dashboard del Administrador">
+      
+      <p className="dashboard-text mb-8 text-gray-700">
+        Aquí encontrarás un resumen de las métricas clave del sistema y los accesos rápidos a la gestión.
+      </p>
 
-        <ul className="dashboard-list">
-          <li>Revisar y validar matrículas pendientes</li>
-          <li>Ver estudiantes registrados</li>
-          <li>Administrar modalidades, grupos y carreras</li>
-        </ul>
-
-        <div className="dashboard-actions">
-          <button onClick={irAValidar} className="btn-primary">
-            Ir a Validar Matrículas
-          </button>
-        </div>
+      {/* GRID DE MÓDULOS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {MODULOS.map((modulo) => (
+          <div 
+            key={modulo.id}
+            className="bg-white shadow-md rounded-xl p-6 cursor-pointer hover:shadow-lg transition"
+            onClick={() => navigate(modulo.path)}
+          >
+            <div className="text-4xl mb-4">{modulo.icon}</div>
+            <h3 className="text-xl font-semibold mb-2">{modulo.title}</h3>
+            <p className="text-gray-600 text-sm">{modulo.description}</p>
+          </div>
+        ))}
       </div>
-    </Layout>
+
+    </AdminSidebarLayout>
   );
 }

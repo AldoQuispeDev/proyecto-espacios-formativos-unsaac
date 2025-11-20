@@ -1,12 +1,14 @@
-export default function Layout({ title, children, onLogout, onBack }) {
+// src/components/Layout.jsx
+
+export default function Layout({ title, children, onLogout, onBack, fullWidth = false }) {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
-      {/* 🔹 Encabezado superior */}
+
+      {/* ENCABEZADO */}
       <header className="w-full max-w-5xl flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
 
         <div className="flex gap-3">
-          {/* Botón Retroceder (solo si se envía la función onBack) */}
           {onBack && (
             <button
               onClick={onBack}
@@ -16,7 +18,6 @@ export default function Layout({ title, children, onLogout, onBack }) {
             </button>
           )}
 
-          {/* Botón Cerrar sesión (solo si se envía la función onLogout) */}
           {onLogout && (
             <button
               onClick={onLogout}
@@ -28,15 +29,16 @@ export default function Layout({ title, children, onLogout, onBack }) {
         </div>
       </header>
 
-      {/* 🔹 Contenedor principal */}
-      <main className="bg-white shadow-lg rounded-xl w-full max-w-5xl p-6 border border-gray-200">
+      {/* CONTENIDO */}
+      <main className={`w-full max-w-5xl ${!fullWidth ? 'bg-white shadow-lg rounded-xl p-6 border border-gray-200' : ''}`}>
         {children}
       </main>
 
-      {/* 🔹 Pie de página opcional */}
+      {/* FOOTER */}
       <footer className="mt-10 text-sm text-gray-500">
         Sistema de Matrículas © {new Date().getFullYear()} — Academia Preuniversitaria
       </footer>
+
     </div>
   );
 }

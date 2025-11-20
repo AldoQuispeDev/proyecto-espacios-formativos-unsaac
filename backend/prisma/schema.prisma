@@ -10,22 +10,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//
-// TABLA PRINCIPAL: USUARIO DE REGISTRO
-//
+// TABLA CENTRAL: Contiene credenciales y datos personales comunes
 model Usuario {
-  id          Int          @id @default(autoincrement())
-  nombre      String
-  apellidoP   String
-  apellidoM   String
-  correo      String       @unique
-  password    String
-  rol         Rol          @default(USUARIO)
-  activo      Boolean      @default(true)
-  creadoEn    DateTime     @default(now())
+  id              Int      @id @default(autoincrement())
+  nombre          String
+  apellidoPaterno String
+  apellidoMaterno String
+  dni             String   @unique // DNI debe ser unico
+  celular         String?
+  correo          String   @unique
+  password        String
+  rol             Rol      @default(ESTUDIANTE)
+  activo          Boolean  @default(true)
+  creadoEn        DateTime @default(now())
 
-  // Relación 1:1 con Estudiante
-  estudiante  Estudiante?
+  // Relaciones 1:1
+  estudiante Estudiante?
+  docente    Docente?
 }
 
 //
@@ -35,108 +36,133 @@ enum Rol {
   ADMIN
   DOCENTE
   ESTUDIANTE
-  USUARIO
 }
 
-//
-// 🎓 TABLA: ESTUDIANTE
-//
+// TABLA: ESTUDIANTE (Solo datos academicos especificos)
 model Estudiante {
-  id                Int           @id @default(autoincrement())
-  usuarioId         Int           @unique
-  usuario           Usuario       @relation(fields: [usuarioId], references: [id])
-  
-  nombre            String
-  apellidoPaterno   String
-  apellidoMaterno   String
-  dni               String        @unique
+  id        Int     @id @default(autoincrement())
+  usuarioId Int     @unique
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
   fechaNacimiento   DateTime
-  telefono          String
   nombreApoderado   String?
   telefonoApoderado String?
-  matriculas        Matricula[]
-  createdAt         DateTime      @default(now())
+
+  matriculas Matricula[]
 }
 
-//
-// 🏫 TABLA: MODALIDAD (Ordinario, Primera Oportunidad, etc.)
-//
+// TABLA: DOCENTE (Nueva)
+model Docente {
+  id        Int     @id @default(autoincrement())
+  usuarioId Int     @unique
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  especialidad String? // Ejemplo: Matematicas, Historia
+  titulo       String? // Grado academico
+
+  clases Clase[]
+}
+
+// --- MODELOS ACADEMICOS (Sin cambios mayores, solo limpieza) ---
+
 model Modalidad {
-  id          Int          @id @default(autoincrement())
-  nombre      String       @unique
-  grupos      Grupo[]
-  matriculas  Matricula[]
+  id         Int         @id @default(autoincrement())
+  nombre     String      @unique
+  grupos     Grupo[]
+  matriculas Matricula[]
 }
 
 //
 // 🧩 TABLA: GRUPO (A, B, C, D)
 //
 model Grupo {
-  id           Int           @id @default(autoincrement())
-  nombre       String
-  modalidadId  Int?
-  modalidad    Modalidad?     @relation(fields: [modalidadId], references: [id])
-  carreras     Carrera[]
-  asignaturas  Asignatura[]
-  matriculas   Matricula[]
+  id          Int          @id @default(autoincrement())
+  nombre      String
+  modalidadId Int?
+  modalidad   Modalidad?   @relation(fields: [modalidadId], references: [id])
+  carreras    Carrera[]
+  asignaturas Asignatura[]
+  matriculas  Matricula[]
+  clases      Clase[]
 }
 
-//
-// 🎓 TABLA: CARRERA
-//
 model Carrera {
-  id        Int        @id @default(autoincrement())
-  nombre    String
-  grupoId   Int
-  grupo     Grupo      @relation(fields: [grupoId], references: [id])
-
-  // 🔁 Relaciones inversas con Matricula
+  id                   Int         @id @default(autoincrement())
+  nombre               String
+  grupoId              Int
+  grupo                Grupo       @relation(fields: [grupoId], references: [id])
   matriculasPrincipal  Matricula[] @relation("Principal")
   matriculasSecundaria Matricula[] @relation("Secundaria")
 }
-
-
 
 //
 // 📚 TABLA: ASIGNATURA
 //
 model Asignatura {
-  id        Int        @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   nombre    String
   preguntas Int
   grupoId   Int
-  grupo     Grupo      @relation(fields: [grupoId], references: [id])
+  grupo     Grupo   @relation(fields: [grupoId], references: [id])
+  clases    Clase[]
 }
-
 
 //MATRICULA
 model Matricula {
-  id                   Int         @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  // 🔗 Relaciones
-  estudianteId         Int?
-  estudiante           Estudiante?  @relation(fields: [estudianteId], references: [id])
-  grupo                Grupo        @relation(fields: [grupoId], references: [id])
-  grupoId              Int
-  modalidad            Modalidad    @relation(fields: [modalidadId], references: [id])
-  modalidadId          Int
-  carreraPrincipal     Carrera      @relation("Principal", fields: [carreraPrincipalId], references: [id])
-  carreraPrincipalId   Int
-  carreraSecundaria    Carrera?     @relation("Secundaria", fields: [carreraSecundariaId], references: [id])
-  carreraSecundariaId  Int?
+  estudianteId Int
+  estudiante   Estudiante @relation(fields: [estudianteId], references: [id])
 
-  // 🧾 Campos adicionales
-  tipoPago             String
-  comprobanteUrl       String?
-  estado               String       @default("PENDIENTE")
-  createdAt            DateTime     @default(now())
+  grupoId Int
+  grupo   Grupo @relation(fields: [grupoId], references: [id])
 
-  // 🧍 Campos temporales
-  nombre              String?
-  apellidoPaterno     String?
-  apellidoMaterno     String?
-  dni                 String?
-  telefono            String?
-  nombreApoderado     String?
-  telefonoApoderado   String?
+  modalidadId Int
+  modalidad   Modalidad @relation(fields: [modalidadId], references: [id])
+
+  carreraPrincipalId Int
+  carreraPrincipal   Carrera @relation("Principal", fields: [carreraPrincipalId], references: [id])
+
+  carreraSecundariaId Int?
+  carreraSecundaria   Carrera? @relation("Secundaria", fields: [carreraSecundariaId], references: [id])
+
+  tipoPago       String
+  comprobanteUrl String?
+  estado         String   @default("PENDIENTE")
+  createdAt      DateTime @default(now())
+}
+
+// ⚠️ Añadir a schema.prisma (dentro del bloque datasource db)
+
+// Define los espacios físicos o virtuales
+model Aula {
+  id        Int     @id @default(autoincrement())
+  nombre    String  @unique // Ej: Aula A-101, Virtual 1
+  capacidad Int?
+  clases    Clase[]
+}
+
+// Representa una instancia de clase o sesión programada
+model Clase {
+  id           Int      @id @default(autoincrement())
+  docenteId    Int
+  asignaturaId Int
+  grupoId      Int
+  aulaId       Int
+  dia          String // Lunes, Martes, etc.
+  horaInicio   DateTime // Hora de inicio (usar formato DateTime con fecha base)
+  horaFin      DateTime // Hora de fin
+
+  // Relaciones
+  // Nota: Docente se relaciona con UsuarioId de la tabla Usuario a través de la tabla Docente
+  docente    Docente    @relation(fields: [docenteId], references: [usuarioId])
+  asignatura Asignatura @relation(fields: [asignaturaId], references: [id])
+  grupo      Grupo      @relation(fields: [grupoId], references: [id])
+  aula       Aula       @relation(fields: [aulaId], references: [id])
+
+  // 🛑 RESTRICCIONES DE HORARIO (CRÍTICAS)
+  // No puede haber dos clases en la misma aula al mismo tiempo, el mismo día.
+  @@unique([aulaId, dia, horaInicio])
+  // No puede haber un Docente dictando dos clases al mismo tiempo, el mismo día.
+  @@unique([docenteId, dia, horaInicio])
 }

@@ -13,201 +13,105 @@ export default function Registro() {
     nacimiento: "",
     correo: "",
     password: "",
+    rol: "ESTUDIANTE", // Valor por defecto
+    especialidad: "", // Solo para docentes
   });
 
   const [errores, setErrores] = useState({});
   const [mensaje, setMensaje] = useState("");
   const navigate = useNavigate();
 
-  // 🔍 Validación de cada campo
-  const validarCampo = (name, value) => {
-    let error = "";
-
-    switch (name) {
-      case "nombre":
-      case "apellidoP":
-      case "apellidoM":
-        if (!value.trim()) error = "Campo obligatorio";
-        break;
-
-      case "dni":
-        if (!/^\d{8}$/.test(value)) error = "Debe tener 8 dígitos numéricos";
-        break;
-
-      case "celular":
-        if (value && !/^\d{9}$/.test(value))
-          error = "Debe tener 9 dígitos numéricos";
-        break;
-
-      case "nacimiento":
-        if (value && new Date(value) > new Date())
-          error = "La fecha no puede ser futura";
-        break;
-
-      case "correo":
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
-          error = "Correo no válido";
-        break;
-
-      case "password":
-        if (value.length < 8)
-          error = "Debe tener al menos 8 caracteres";
-        break;
-
-      default:
-        break;
-    }
-
-    setErrores((prev) => ({ ...prev, [name]: error }));
-  };
-
-  // 🧠 Al escribir, validar en tiempo real
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-    validarCampo(name, value);
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const formValido = () => {
-    return Object.values(form).every((v) => v.trim() !== "") &&
-           Object.values(errores).every((v) => !v);
-  };
-
-  // 🚀 Envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validar todos antes de enviar
-    Object.entries(form).forEach(([name, value]) => validarCampo(name, value));
-
-    if (!formValido()) {
-      setMensaje("❌ Corrige los campos marcados en rojo");
-      return;
+    setMensaje("");
+    
+    // Validacion simple frontend
+    if(form.dni.length !== 8) {
+        setMensaje("El DNI debe tener 8 dígitos");
+        return;
     }
 
     try {
       await register(form);
-      setMensaje("✅ Registro exitoso, ahora inicia sesión");
-      setTimeout(() => navigate("/login"), 1500);
+      setMensaje("✅ Registro exitoso. Redirigiendo al login...");
+      setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
       console.error(error);
-      setMensaje("❌ Error al registrarse o correo ya existente");
+      setMensaje("❌ " + (error.response?.data?.error || "Error al registrarse"));
     }
   };
 
   return (
     <div className="registro-container">
-      <h2>Registro de Usuario</h2>
+      <div className="registro-card">
+        <h2>Crear Cuenta</h2>
+        <p>Únete a nuestra comunidad académica</p>
 
-      <form onSubmit={handleSubmit} className="registro-form" noValidate>
-        <input
-          name="nombre"
-          placeholder="Nombre"
-          value={form.nombre}
-          onChange={handleChange}
-          className={errores.nombre ? "error" : "success"}
-          required
-        />
-        {errores.nombre && <span className="error-text">{errores.nombre}</span>}
+        <form onSubmit={handleSubmit} className="registro-form">
+            
+          {/* SELECTOR DE TIPO DE USUARIO */}
+          <div className="form-group-full">
+            <label>Quiero registrarme como:</label>
+            <div className="rol-selector">
+                <label>
+                    <input 
+                        type="radio" 
+                        name="rol" 
+                        value="ESTUDIANTE" 
+                        checked={form.rol === "ESTUDIANTE"} 
+                        onChange={handleChange}
+                    /> Estudiante
+                </label>
+                <label>
+                    <input 
+                        type="radio" 
+                        name="rol" 
+                        value="DOCENTE" 
+                        checked={form.rol === "DOCENTE"} 
+                        onChange={handleChange}
+                    /> Docente
+                </label>
+            </div>
+          </div>
 
-        <input
-          name="apellidoP"
-          placeholder="Apellido Paterno"
-          value={form.apellidoP}
-          onChange={handleChange}
-          className={errores.apellidoP ? "error" : "success"}
-          required
-        />
-        {errores.apellidoP && (
-          <span className="error-text">{errores.apellidoP}</span>
-        )}
+          <div className="grid-2">
+              <input name="nombre" placeholder="Nombre" onChange={handleChange} required />
+              <input name="apellidoP" placeholder="Apellido Paterno" onChange={handleChange} required />
+              <input name="apellidoM" placeholder="Apellido Materno" onChange={handleChange} required />
+              <input name="dni" placeholder="DNI" onChange={handleChange} required maxLength={8} />
+          </div>
 
-        <input
-          name="apellidoM"
-          placeholder="Apellido Materno"
-          value={form.apellidoM}
-          onChange={handleChange}
-          className={errores.apellidoM ? "error" : "success"}
-          required
-        />
-        {errores.apellidoM && (
-          <span className="error-text">{errores.apellidoM}</span>
-        )}
+          <input name="celular" placeholder="Celular" onChange={handleChange} required maxLength={9} />
+          <input name="correo" type="email" placeholder="Correo Electrónico" onChange={handleChange} required />
+          <input name="password" type="password" placeholder="Contraseña" onChange={handleChange} required />
 
-        <input
-          name="dni"
-          placeholder="DNI (8 dígitos)"
-          value={form.dni}
-          onChange={handleChange}
-          className={errores.dni ? "error" : "success"}
-          required
-        />
-        {errores.dni && <span className="error-text">{errores.dni}</span>}
+          {/* CAMPOS DINÁMICOS SEGÚN ROL */}
+          {form.rol === "ESTUDIANTE" && (
+              <div className="campo-condicional">
+                  <label>Fecha de Nacimiento:</label>
+                  <input name="nacimiento" type="date" onChange={handleChange} required />
+              </div>
+          )}
 
-        <input
-          name="celular"
-          placeholder="Celular (9 dígitos)"
-          value={form.celular}
-          onChange={handleChange}
-          className={errores.celular ? "error" : "success"}
-        />
-        {errores.celular && <span className="error-text">{errores.celular}</span>}
+          {form.rol === "DOCENTE" && (
+              <div className="campo-condicional">
+                  <input name="especialidad" placeholder="Especialidad (Ej. Matemáticas)" onChange={handleChange} required />
+              </div>
+          )}
 
-        <label>Fecha de Nacimiento:</label>
-        <input
-          name="nacimiento"
-          type="date"
-          value={form.nacimiento}
-          onChange={handleChange}
-          className={errores.nacimiento ? "error" : "success"}
-        />
-        {errores.nacimiento && (
-          <span className="error-text">{errores.nacimiento}</span>
-        )}
+          <button type="submit" className="btn-submit">Registrarse</button>
+        </form>
 
-        <input
-          name="correo"
-          type="email"
-          placeholder="Correo electrónico"
-          value={form.correo}
-          onChange={handleChange}
-          className={errores.correo ? "error" : "success"}
-          required
-        />
-        {errores.correo && <span className="error-text">{errores.correo}</span>}
+        {mensaje && <div className="mensaje-alerta">{mensaje}</div>}
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Contraseña"
-          value={form.password}
-          onChange={handleChange}
-          className={errores.password ? "error" : "success"}
-          required
-        />
-        {errores.password && (
-          <span className="error-text">{errores.password}</span>
-        )}
-
-        <button type="submit">Registrarse</button>
-      </form>
-
-      {mensaje && (
-        <p
-          className={
-            mensaje.startsWith("✅") ? "success-message" : "error-message"
-          }
-        >
-          {mensaje}
+        <p className="login-link">
+          ¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link>
         </p>
-      )}
-
-      <p>
-        ¿Ya tienes cuenta?{" "}
-        <Link to="/login" className="link-login">
-          Inicia sesión
-        </Link>
-      </p>
+      </div>
     </div>
   );
 }
