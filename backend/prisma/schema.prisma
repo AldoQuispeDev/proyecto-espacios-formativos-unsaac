@@ -111,9 +111,20 @@ model Asignatura {
 model Matricula {
   id Int @id @default(autoincrement())
 
-  estudianteId Int
-  estudiante   Estudiante @relation(fields: [estudianteId], references: [id])
+  // Estudiante (opcional - solo si ya tiene cuenta)
+  estudianteId Int?
+  estudiante   Estudiante? @relation(fields: [estudianteId], references: [id])
 
+  // Datos personales del postulante (para matrículas sin cuenta)
+  nombre             String?
+  apellidoPaterno    String?
+  apellidoMaterno    String?
+  dni                String   @unique
+  email              String?
+  telefono           String?
+  colegioProcedencia String?
+
+  // Relaciones académicas
   grupoId Int
   grupo   Grupo @relation(fields: [grupoId], references: [id])
 
@@ -126,6 +137,7 @@ model Matricula {
   carreraSecundariaId Int?
   carreraSecundaria   Carrera? @relation("Secundaria", fields: [carreraSecundariaId], references: [id])
 
+  // Datos de pago y estado
   tipoPago       String
   comprobanteUrl String?
   estado         String   @default("PENDIENTE")

@@ -1,5 +1,5 @@
 // src/pages/admin/GestionCatalogos.jsx
-
+import "./GestionCatalogos.css";
 import React from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import AdminSidebarLayout from '../../components/AdminSidebarLayout';

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./PasoDatosPersonales.css";
 // ⚠️ IMPORTAR CLIENTES API NECESARIOS
 import { getDatosPersonales, updateDatosPersonales } from "../api/usuario"; 
 
-export default function PasoDatosPersonales({ formData, setFormData, onNext }) {
+export default function PasoDatosPersonales({ formData, setFormData }) {
+  const navigate = useNavigate();
   const [errores, setErrores] = useState({});
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
@@ -127,9 +129,11 @@ export default function PasoDatosPersonales({ formData, setFormData, onNext }) {
         // 2. Ejecutar la actualización (PUT)
         await updateDatosPersonales(datosUsuarioAActualizar);
         
-        // 3. Si la actualización fue exitosa, avanzamos
-        setMensaje("✅ Datos personales validados y actualizados. Continuamos.");
-        setTimeout(() => onNext(), 500);
+        // 3. Si la actualización fue exitosa, redirigir al aula virtual
+        setMensaje("✅ Datos actualizados. Redirigiendo a tu aula virtual...");
+        setTimeout(() => {
+            navigate("/estudiante/aula");
+        }, 1000);
 
     } catch (error) {
         console.error("Error al validar y actualizar tus datos:", error);
@@ -293,14 +297,24 @@ export default function PasoDatosPersonales({ formData, setFormData, onNext }) {
             </div>
         )}
 
-        {/* Botón siguiente */}
+        {/* Botón para ir al aula virtual */}
         <div className="button-container">
           <button
             type="submit"
-            className="btn-next"
+            className="btn-aula-virtual"
             disabled={!formValido || loading}
           >
-            {loading ? 'Validando...' : 'Siguiente →'}
+            {loading ? (
+              <>
+                <span className="spinner-small"></span>
+                Validando...
+              </>
+            ) : (
+              <>
+                <span className="icon">🎓</span>
+                Ver Mi Aula Virtual
+              </>
+            )}
           </button>
         </div>
       </form>

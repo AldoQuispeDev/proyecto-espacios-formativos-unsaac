@@ -1,0 +1,164 @@
+/* EstudianteFormModal.css */
+
+.estudiante-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.estudiante-modal-content {
+  background-color: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 48rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.estudiante-modal-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.estudiante-modal-error {
+  background-color: #fee2e2;
+  border: 1px solid #f87171;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.estudiante-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.estudiante-form-input {
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.estudiante-form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.estudiante-form-input.error {
+  border-color: #ef4444;
+}
+
+.estudiante-error-text {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.estudiante-form-label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.estudiante-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 1.5rem;
+  grid-column: span 2;
+}
+
+.estudiante-btn-cancel {
+  background-color: #d1d5db;
+  color: #1f2937;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.estudiante-btn-cancel:hover {
+  background-color: #9ca3af;
+}
+
+.estudiante-btn-submit {
+  background-color: #2563eb;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.estudiante-btn-submit:hover {
+  background-color: #1d4ed8;
+}
+
+.estudiante-btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .estudiante-modal-overlay {
+    padding: 15px;
+  }
+
+  .estudiante-modal-content {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .estudiante-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .estudiante-form-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .estudiante-btn-cancel,
+  .estudiante-btn-submit {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .estudiante-modal-overlay {
+    padding: 10px;
+  }
+
+  .estudiante-modal-content {
+    padding: 16px;
+  }
+
+  .estudiante-modal-title {
+    font-size: 1.125rem;
+  }
+
+  .estudiante-form-input {
+    font-size: 14px;
+  }
+}

@@ -12,11 +12,17 @@ export const obtenerModalidades = () => api.get("/modalidades");
 // Obtener todos los grupos (usado por el frontend público/catálogos)
 export const obtenerGrupos = () => api.get("/grupos");
 
+// Alias para admin (mismo endpoint)
+export const getGrupos = () => api.get("/grupos");
+
 // Obtener carreras según grupo
 export const obtenerCarrerasPorGrupo = (grupoId) => api.get(`/carreras/${grupoId}`);
 
 // Obtener asignaturas según grupo
 export const obtenerAsignaturasPorGrupo = (grupoId) => api.get(`/asignaturas/${grupoId}`);
+
+// Obtener todas las asignaturas (para admin)
+export const getAsignaturas = () => api.get("/asignaturas");
 
 
 // ----------------------------------------------------------------------

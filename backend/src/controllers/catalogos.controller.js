@@ -52,3 +52,20 @@ export const listarAsignaturasPorGrupo = async (req, res) => {
     res.status(500).json({ message: "Error al listar asignaturas" });
   }
 };
+
+// 🔹 Listar todas las asignaturas (para admin)
+export const listarAsignaturas = async (req, res) => {
+  try {
+    const asignaturas = await prisma.asignatura.findMany({
+      include: {
+        grupo: {
+          select: { nombre: true },
+        },
+      },
+    });
+    res.json(asignaturas);
+  } catch (error) {
+    console.error("❌ Error al listar asignaturas:", error);
+    res.status(500).json({ message: "Error al listar asignaturas" });
+  }
+};

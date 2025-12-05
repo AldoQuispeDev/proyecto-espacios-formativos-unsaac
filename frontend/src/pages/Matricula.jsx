@@ -112,24 +112,16 @@ const handleSubmit = async () => {
 
       {/* 🔹 Paso 5: Matrícula enviada */}
       {step === 5 && (
-        <div style={{ textAlign: "center", padding: "50px" }}>
-          <h2>🎉 Matrícula enviada</h2>
-          <p>
+        <div className="text-center py-5">
+          <h2 className="mb-3">🎉 Matrícula enviada</h2>
+          <p className="mb-4">
             Tu matrícula fue registrada correctamente. <br />
             Una vez sea aprobada, se te notificará por WhatsApp o podrás volver
             aquí para descargar tu constancia.
           </p>
           <button
             onClick={() => navigate("/principal")}
-            style={{
-              marginTop: "20px",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              padding: "10px 18px",
-              cursor: "pointer",
-            }}
+            className="btn btn-primary btn-lg px-5"
           >
             Volver al inicio
           </button>
@@ -138,30 +130,16 @@ const handleSubmit = async () => {
 
       {/* 🔹 Mensaje de estado */}
       {mensaje && (
-        <p
-          style={{
-            textAlign: "center",
-            color: mensaje.startsWith("✅") ? "green" : "red",
-            fontWeight: "600",
-            marginTop: "15px",
-          }}
-        >
+        <div className={`alert ${mensaje.startsWith("✅") ? "alert-success" : "alert-danger"} text-center mt-3`}>
           {mensaje}
-        </p>
+        </div>
       )}
 
       {/* 🔹 Botón cerrar sesión */}
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
+      <div className="text-center mt-4">
         <button
           onClick={cerrarSesion}
-          style={{
-            backgroundColor: "#dc3545",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            padding: "10px 18px",
-            cursor: "pointer",
-          }}
+          className="btn btn-danger px-4"
         >
           Cerrar sesión
         </button>

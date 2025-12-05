@@ -1,27 +1,252 @@
-/* src/pages/admin/ValidarMatricula.css */
+/* Validar Matrícula - Estilos Mejorados con Bootstrap */
 
-.tabla-matriculas {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9em;
+.validar-matricula-container {
+  padding: 24px;
 }
 
-.tabla-matriculas th, 
-.tabla-matriculas td {
-    padding: 10px 12px;
-    text-align: left;
-    border-bottom: 1px solid #e5e7eb;
+.validar-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1f2937;
 }
 
-.tabla-matriculas th {
-    background-color: #f9fafb;
-    font-weight: 600;
-    color: #4b5563;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 16px;
+  border: 2px dashed #fbbf24;
 }
 
-.tabla-matriculas tbody tr:last-child td {
-    border-bottom: none;
+.empty-state-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
 }
-/* Estilos de botones específicos ya definidos en línea (Tailwind CSS) */
+
+.empty-state h2 {
+  font-size: 24px;
+  color: #92400e;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.empty-state p {
+  font-size: 16px;
+  color: #78350f;
+}
+
+/* Matricula Card */
+.matricula-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  border: 2px solid #e5e7eb;
+}
+
+.matricula-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: #667eea;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.card-number {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.card-estado {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.card-estado.pendiente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.card-body {
+  margin-bottom: 20px;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.info-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-label {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.info-value {
+  font-size: 15px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* Comprobante Section */
+.comprobante-section {
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 2px dashed #d1d5db;
+}
+
+.comprobante-section h4 {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.comprobante-preview {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 200px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.comprobante-preview:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.comprobante-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.btn-ver-comprobante {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.btn-ver-comprobante:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+}
+
+.no-comprobante {
+  text-align: center;
+  padding: 20px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* Card Actions */
+.btn-action {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-aprobar {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-aprobar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-rechazar {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-rechazar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}
+
+/* Loading */
+.loading-container {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #f3f4f6;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+/* Responsive - Bootstrap maneja el grid, solo ajustes específicos */
+@media (max-width: 768px) {
+  .validar-matricula-container {
+    padding: 16px;
+  }
+}

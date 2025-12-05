@@ -101,7 +101,8 @@ export default function GestionDocentes() {
 
       {error && <div className="text-red-600 bg-red-100 p-3 rounded mb-4">{error}</div>}
 
-      <div className="overflow-x-auto shadow-lg rounded-lg">
+      <div className="overflow-x-auto shadow-lg rounded-lg tabla-docentes-container">
+
         <table className="min-w-full divide-y divide-gray-200 bg-white tabla-docentes">
           <thead className="bg-gray-50">
             <tr>

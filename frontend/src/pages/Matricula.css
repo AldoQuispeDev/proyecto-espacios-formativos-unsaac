@@ -10,10 +10,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #0033a0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 15px 40px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .matricula-header h2 {
@@ -60,7 +60,7 @@
   display: block;
   font-weight: 600;
   margin-bottom: 10px;
-  color: #0033a0;
+  color: #667eea;
 }
 
 .matricula-form select {
@@ -73,7 +73,7 @@
 }
 
 .btn-enviar {
-  background-color: #0033a0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   padding: 10px 25px;
@@ -81,15 +81,64 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  transition: background 0.3s;
+  transition: all 0.3s;
 }
 
 .btn-enviar:hover {
-  background-color: #0056d6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .mensaje {
   margin-top: 20px;
   font-weight: 500;
   color: #444;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .matricula-header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 20px;
+    text-align: center;
+  }
+
+  .matricula-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .bienvenida {
+    margin-right: 0;
+  }
+
+  .matricula-form {
+    width: 90%;
+    padding: 25px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .matricula-header {
+    padding: 12px 15px;
+  }
+
+  .matricula-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .matricula-form {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .matricula-form select {
+    font-size: 14px;
+  }
+
+  .btn-enviar,
+  .btn-cerrar {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
 }

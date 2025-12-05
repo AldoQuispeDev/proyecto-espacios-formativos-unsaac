@@ -48,7 +48,9 @@ export const crearMatricula = async (req, res) => {
       apellidoPaterno,
       apellidoMaterno,
       dni,
+      email,
       telefono,
+      colegioProcedencia,
       nombreApoderado,
       telefonoApoderado,
     } = req.body;
@@ -72,7 +74,9 @@ export const crearMatricula = async (req, res) => {
       apellidoPaterno,
       apellidoMaterno,
       dni,
+      email,
       telefono,
+      colegioProcedencia,
       nombreApoderado,
       telefonoApoderado,
       usuarioId,
@@ -87,7 +91,16 @@ export const crearMatricula = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Error al crear matrícula:", error);
-    res.status(500).json({ success: false, message: "Error al registrar matrícula" });
+    console.error("❌ Error completo:", error.message);
+    console.error("❌ Stack:", error.stack);
+    
+    // Enviar error más descriptivo
+    const errorMessage = error.message || "Error al registrar matrícula";
+    res.status(500).json({ 
+      success: false, 
+      message: errorMessage,
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
@@ -128,5 +141,37 @@ export const rechazarMatricula = async (req, res) => {
   } catch (error) {
     console.error("❌ Error al rechazar matrícula:", error);
     res.status(500).json({ success: false, message: "Error al rechazar matrícula" });
+  }
+};
+
+// 🔹 Consultar estado de matrícula por DNI (PÚBLICO)
+export const consultarEstadoPorDNI = async (req, res) => {
+  try {
+    const { dni } = req.params;
+    const { PrismaClient } = await import("@prisma/client");
+    const prisma = new PrismaClient();
+
+    const matricula = await prisma.matricula.findFirst({
+      where: { dni },
+      include: {
+        modalidad: true,
+        grupo: true,
+        carreraPrincipal: true,
+        carreraSecundaria: true,
+      },
+      orderBy: { createdAt: "desc" }, // La más reciente
+    });
+
+    if (!matricula) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "No se encontró matrícula con ese DNI" 
+      });
+    }
+
+    res.json(matricula);
+  } catch (error) {
+    console.error("❌ Error al consultar matrícula:", error);
+    res.status(500).json({ success: false, message: "Error al consultar matrícula" });
   }
 };

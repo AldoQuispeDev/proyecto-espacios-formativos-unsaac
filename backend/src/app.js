@@ -14,6 +14,8 @@ import catalogosRoutes from "./routes/catalogos.routes.js";
 import docentesRoutes from "./routes/docentes.routes.js";
 import estudiantesRoutes from "./routes/estudiantes.routes.js";
 import modalidadesRoutes from "./routes/modalidades.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
+import horariosRoutes from "./routes/horarios.routes.js";
 const app = express();
 
 // Middleware general
@@ -32,6 +34,8 @@ app.use("/api", catalogosRoutes);
 app.use("/api/admin/docentes", docentesRoutes);
 app.use("/api/admin/estudiantes", estudiantesRoutes);
 app.use("/api/admin/modalidades", modalidadesRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/horarios", horariosRoutes);
 // Ruta de pruebag
 app.get("/api/health", (_, res) => res.json({ ok: true }));
 

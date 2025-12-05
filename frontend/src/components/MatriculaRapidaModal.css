@@ -1,0 +1,928 @@
+/* Matrícula Rápida Modal */
+
+.matricula-rapida-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.matricula-rapida-content {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.4s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.matricula-rapida-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #f3f4f6;
+  border: none;
+  font-size: 32px;
+  color: #6b7280;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.matricula-rapida-close:hover {
+  background-color: #e5e7eb;
+  color: #1f2937;
+  transform: rotate(90deg);
+}
+
+/* Header */
+.matricula-rapida-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.matricula-rapida-header h2 {
+  font-size: 28px;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  font-weight: 800;
+}
+
+.modalidad-selected {
+  margin-bottom: 24px;
+}
+
+.modalidad-badge-small {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Progress Bar */
+.progress-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  position: relative;
+}
+
+.progress-bar::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: #e5e7eb;
+  z-index: 0;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.progress-step.active .step-number {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.progress-step span {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  text-align: center;
+}
+
+.progress-step.active span {
+  color: #667eea;
+}
+
+/* Error Message */
+.matricula-error {
+  background: #fee2e2;
+  border: 2px solid #fecaca;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Body */
+.matricula-rapida-body {
+  margin-bottom: 32px;
+}
+
+.matricula-rapida-body h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+/* Form Grids */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-grid-1 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.required {
+  color: #dc2626;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Tipo de Pago Options */
+.tipo-pago-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.radio-option {
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  display: none;
+}
+
+.radio-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s;
+  background: white;
+}
+
+.radio-option input[type="radio"]:checked + .radio-label {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.radio-icon {
+  font-size: 32px;
+}
+
+.radio-label span:last-child {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Confirmación */
+.confirmacion-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.confirmacion-section {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+}
+
+.confirmacion-section h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.confirmacion-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.confirmacion-item .label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.confirmacion-item .value {
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.confirmacion-note {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #3b82f6;
+}
+
+.confirmacion-note p {
+  margin: 0;
+  font-size: 14px;
+  color: #1e40af;
+  line-height: 1.6;
+}
+
+/* Footer */
+.matricula-rapida-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.btn-back-modal,
+.btn-next-modal,
+.btn-submit-modal {
+  padding: 14px 32px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-back-modal {
+  background: white;
+  color: #6b7280;
+  border: 2px solid #e5e7eb;
+}
+
+.btn-back-modal:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.btn-next-modal,
+.btn-submit-modal {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  flex: 1;
+}
+
+.btn-next-modal:hover,
+.btn-submit-modal:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-back-modal:disabled,
+.btn-next-modal:disabled,
+.btn-submit-modal:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .matricula-rapida-content {
+    padding: 32px 24px;
+    border-radius: 16px;
+  }
+
+  .matricula-rapida-header h2 {
+    font-size: 24px;
+  }
+
+  .progress-bar {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .progress-bar::before {
+    display: none;
+  }
+
+  .progress-step {
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .tipo-pago-options {
+    grid-template-columns: 1fr;
+  }
+
+  .confirmacion-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .matricula-rapida-footer {
+    flex-direction: column;
+  }
+
+  .btn-back-modal,
+  .btn-next-modal,
+  .btn-submit-modal {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .matricula-rapida-overlay {
+    padding: 10px;
+  }
+
+  .matricula-rapida-content {
+    padding: 24px 16px;
+    max-height: 95vh;
+  }
+
+  .matricula-rapida-header h2 {
+    font-size: 20px;
+  }
+
+  .step-number {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .progress-step span {
+    font-size: 11px;
+  }
+}
+
+/* Accessibility */
+.btn-back-modal:focus,
+.btn-next-modal:focus,
+.btn-submit-modal:focus {
+  outline: 3px solid #667eea;
+  outline-offset: 2px;
+}
+
+.matricula-rapida-close:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+
+/* Tipo de Pago - Cards */
+.radio-option-card {
+  display: block;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.radio-option-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.radio-option-card:hover {
+  border-color: #667eea;
+  background-color: #f9fafb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.radio-option-card.selected {
+  border-color: #667eea;
+  background-color: #eef2ff;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.25);
+}
+
+.radio-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radio-card-content .radio-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.radio-card-content .radio-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.radio-card-content .radio-description {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.radio-card-content .radio-description strong {
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Comprobante Section */
+.comprobante-section {
+  margin-top: 32px;
+  padding: 24px;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  border: 2px dashed #d1d5db;
+}
+
+.comprobante-section h4 {
+  font-size: 18px;
+  color: #1f2937;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.comprobante-instruction {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.comprobante-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.comprobante-upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.comprobante-upload-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.comprobante-upload-btn .upload-icon {
+  font-size: 24px;
+}
+
+.comprobante-preview {
+  max-width: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.comprobante-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.btn-remove-file {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-remove-file:hover {
+  background-color: #dc2626;
+  transform: scale(1.05);
+}
+
+.comprobante-note {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.comprobante-note small {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* Alerts */
+.confirmacion-alerts {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid;
+}
+
+.alert-info {
+  background-color: #eff6ff;
+  border-left-color: #3b82f6;
+}
+
+.alert-warning {
+  background-color: #fffbeb;
+  border-left-color: #f59e0b;
+}
+
+.alert-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-content strong {
+  display: block;
+  font-size: 16px;
+  color: #1f2937;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.alert-content p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .matricula-rapida-content {
+    padding: 24px;
+    max-height: 95vh;
+  }
+
+  .matricula-rapida-header h2 {
+    font-size: 22px;
+  }
+
+  .progress-bar {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .progress-bar::before {
+    display: none;
+  }
+
+  .radio-option-card {
+    padding: 16px;
+  }
+
+  .radio-card-content .radio-icon {
+    font-size: 24px;
+  }
+
+  .radio-card-content .radio-title {
+    font-size: 16px;
+  }
+
+  .radio-card-content .radio-description {
+    font-size: 13px;
+  }
+
+  .comprobante-section {
+    padding: 16px;
+  }
+
+  .comprobante-upload-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .alert {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+
+/* Step 4: Estado de Matrícula */
+.estado-success-container {
+  text-align: center;
+  padding: 20px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.success-icon-large {
+  font-size: 100px;
+  margin-bottom: 20px;
+  animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.success-title {
+  font-size: 28px;
+  color: #1f2937;
+  margin-bottom: 32px;
+  font-weight: 800;
+}
+
+/* Estado Badge Large */
+.estado-badge-large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px 32px;
+  border-radius: 20px;
+  margin: 32px auto;
+  max-width: 400px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.estado-badge-large.estado-pendiente {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 8px 32px rgba(251, 191, 36, 0.4);
+}
+
+.estado-icon-large {
+  font-size: 48px;
+}
+
+.estado-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.estado-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.estado-value {
+  font-size: 32px;
+  color: white;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+/* Matrícula Resumen */
+.matricula-resumen {
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 24px;
+  margin: 32px 0;
+  text-align: left;
+}
+
+.matricula-resumen h3 {
+  font-size: 20px;
+  color: #1f2937;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.resumen-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  border-left: 4px solid #667eea;
+  transition: all 0.3s;
+}
+
+.resumen-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.resumen-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.resumen-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.resumen-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resumen-value {
+  font-size: 16px;
+  color: #1f2937;
+  font-weight: 700;
+}
+
+/* Estado Alerts */
+.estado-alerts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.alert-info-estado {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-left: 4px solid #3b82f6;
+}
+
+.alert-warning-estado {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+
+.alert-success-estado {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-left: 4px solid #10b981;
+}
+
+/* Botón Finalizar */
+.btn-finalizar-modal {
+  flex: 1;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-finalizar-modal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+/* Progress Bar - 4 pasos */
+.progress-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+/* Responsive para 4 pasos */
+@media (max-width: 768px) {
+  .progress-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .success-icon-large {
+    font-size: 80px;
+  }
+
+  .success-title {
+    font-size: 22px;
+  }
+
+  .estado-badge-large {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .estado-icon-large {
+    font-size: 40px;
+  }
+
+  .estado-value {
+    font-size: 24px;
+  }
+
+  .resumen-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

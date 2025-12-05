@@ -1,10 +1,13 @@
 import { useState, useContext } from "react";
 import { login } from "../api/auth";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import "./Login.css";
 
 export default function Login() {
+  const location = useLocation();
+  const selectedRole = location.state?.selectedRole;
+  
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [mensaje, setMensaje] = useState("");
@@ -16,35 +19,72 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await login({ correo, password });
+      const usuario = res.data.usuario;
+
+      // Validar que el rol del usuario coincida con el seleccionado
+      if (selectedRole && usuario.rol !== selectedRole) {
+        setMensaje(`❌ Esta cuenta no tiene permisos de ${selectedRole === "ADMIN" ? "Administrador" : "Alumno"}`);
+        return;
+      }
 
       // Guardar usuario en el contexto global
-      setUser(res.data.usuario);
+      setUser(usuario);
 
       // Navegar según el rol
-      switch (res.data.usuario.rol) {
+      switch (usuario.rol) {
         case "ADMIN":
-          navigate("/Admin");
+          navigate("/admin");
+          break;
+        case "ESTUDIANTE":
+          navigate("/estudiante/aula");
+          break;
+        case "DOCENTE":
+          navigate("/docente/panel");
           break;
         default:
           navigate("/principal");
       }
     } catch (error) {
-      console.error(error);
-      setMensaje("❌ Credenciales incorrectas o cuenta desactivada");
+      console.error("Error completo:", error);
+      console.error("Respuesta del servidor:", error.response?.data);
+      const errorMsg = error.response?.data?.error || "Credenciales incorrectas o cuenta desactivada";
+      setMensaje(`❌ ${errorMsg}`);
     }
+  };
+
+  const handleClose = () => {
+    navigate("/");
   };
 
   return (
     <div className="login-container">
+      <button className="login-close-btn" onClick={handleClose} aria-label="Cerrar">
+        ×
+      </button>
       <div className="login-header">
         <h1>Academia Preuniversitaria</h1>
         <h2>Iniciar Sesión</h2>
-        <p className="signup-link">
-          ¿No tienes una cuenta?{" "}
-          <Link to="/registro" className="register-link">
-            Regístrate aquí
-          </Link>
-        </p>
+        {selectedRole && (
+          <div className="role-badge">
+            {selectedRole === "ADMIN" ? "👨‍💼 Administrador" : "🎓 Alumno"}
+          </div>
+        )}
+        {selectedRole === "ESTUDIANTE" && (
+          <div className="info-box">
+            <p className="info-text">
+              <strong>📧 Correo:</strong> El que usaste al matricularte<br/>
+              <strong>🔑 Contraseña:</strong> Tu número de DNI
+            </p>
+          </div>
+        )}
+        {!selectedRole && (
+          <p className="signup-link">
+            ¿No tienes una cuenta?{" "}
+            <Link to="/registro" className="register-link">
+              Regístrate aquí
+            </Link>
+          </p>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="login-form">

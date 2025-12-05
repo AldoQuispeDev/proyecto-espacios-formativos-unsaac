@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -22,13 +23,18 @@ export const crearMatriculaService = async (data) => {
   const idUsuarioConectado = parseId(data.estudianteId || data.usuarioId);
 
   // 2. Filtramos la data para construir el objeto final de Prisma
-  // FILTRAMOS: 
-  // a) Datos de Usuario (que van en la tabla Usuario, no Matricula)
-  // b) Claves Foráneas ID escalares (porque usaremos la sintaxis 'connect')
   const {
     estudianteId,
     usuarioId,
-    nombre, apellidoPaterno, apellidoMaterno, dni, telefono, nombreApoderado, telefonoApoderado,
+    nombre, 
+    apellidoPaterno, 
+    apellidoMaterno, 
+    dni,
+    email,
+    telefono,
+    colegioProcedencia,
+    nombreApoderado, 
+    telefonoApoderado,
     
     // 🛑 CLAVES FORÁNEAS ESCALARES A OMITIR (Usaremos la sintaxis connect)
     grupoId: _,
@@ -36,14 +42,13 @@ export const crearMatriculaService = async (data) => {
     carreraPrincipalId: ___,
     carreraSecundariaId: ____,
     
-    ...camposRestantes // Contiene tipoPago, comprobanteUrl, y otros escalares (estado, createdAt)
+    ...camposRestantes // Contiene tipoPago, comprobanteUrl, estado, etc.
   } = data;
 
   // 3. Validación de Claves Obligatorias
-  if (!grupoId || !modalidadId || !carreraPrincipalId || !idUsuarioConectado) {
+  if (!grupoId || !modalidadId || !carreraPrincipalId) {
       throw new Error("Faltan IDs obligatorios para la Matrícula.");
   }
-
 
   // 4. Construir el objeto de datos FINAL que consume Prisma
   const matriculaData = {
@@ -52,20 +57,37 @@ export const crearMatriculaService = async (data) => {
     modalidad: { connect: { id: modalidadId } },
     carreraPrincipal: { connect: { id: carreraPrincipalId } },
     
-    // Conexión del Estudiante: Usamos el ID del Usuario Logueado para buscar la ficha del Estudiante
-    estudiante: { connect: { usuarioId: idUsuarioConectado } }, 
-    
     // B. Conexión de Relación (Opcional)
     ...(carreraSecundariaId && {
       carreraSecundaria: { connect: { id: carreraSecundariaId } },
     }),
 
-    // C. Datos Escalares Restantes (tipoPago, comprobanteUrl, etc.)
+    // C. Conexión del Estudiante (OPCIONAL - solo si hay usuario logueado)
+    ...(idUsuarioConectado && {
+      estudiante: { connect: { usuarioId: idUsuarioConectado } },
+    }),
+
+    // D. Datos personales (para matrículas sin usuario)
+    nombre,
+    apellidoPaterno,
+    apellidoMaterno,
+    dni,
+    email,
+    telefono,
+    colegioProcedencia,
+
+    // E. Datos Escalares Restantes (tipoPago, comprobanteUrl, etc.)
     ...camposRestantes, 
   };
 
   return await prisma.matricula.create({
-    data: matriculaData
+    data: matriculaData,
+    include: {
+      grupo: true,
+      modalidad: true,
+      carreraPrincipal: true,
+      carreraSecundaria: true,
+    }
   });
 };
 
@@ -84,10 +106,103 @@ export const listarMatriculasService = async () => {
 };
 
 export const aprobarMatriculaService = async (id) => {
-  return await prisma.matricula.update({
-    where: { id: parseInt(id) },
-    data: { estado: "APROBADA" },
+  const matriculaId = parseInt(id);
+  
+  // 1. Obtener la matrícula con sus datos
+  const matricula = await prisma.matricula.findUnique({
+    where: { id: matriculaId },
+    include: {
+      estudiante: true,
+      grupo: true,
+      modalidad: true,
+    }
   });
+
+  if (!matricula) {
+    throw new Error("Matrícula no encontrada");
+  }
+
+  // 2. Verificar si ya tiene un estudiante asociado
+  if (matricula.estudianteId) {
+    // Ya tiene estudiante, solo actualizar estado
+    return await prisma.matricula.update({
+      where: { id: matriculaId },
+      data: { estado: "APROBADA" },
+    });
+  }
+
+  // 3. Verificar si ya existe un usuario con ese correo
+  const usuarioExistente = await prisma.usuario.findUnique({
+    where: { correo: matricula.email }
+  });
+
+  if (usuarioExistente) {
+    // Si existe el usuario, buscar o crear el estudiante
+    let estudiante = await prisma.estudiante.findUnique({
+      where: { usuarioId: usuarioExistente.id }
+    });
+
+    if (!estudiante) {
+      // Crear estudiante para el usuario existente
+      estudiante = await prisma.estudiante.create({
+        data: {
+          usuarioId: usuarioExistente.id,
+          fechaNacimiento: new Date(),
+        }
+      });
+    }
+
+    // Vincular matrícula con estudiante y aprobar
+    return await prisma.matricula.update({
+      where: { id: matriculaId },
+      data: { 
+        estado: "APROBADA",
+        estudianteId: estudiante.id
+      },
+    });
+  }
+
+  // 4. No existe usuario, crear usuario + estudiante automáticamente
+  const passwordHash = await bcrypt.hash(matricula.dni, 10); // Contraseña = DNI
+
+  // Crear usuario y estudiante en una transacción
+  const resultado = await prisma.$transaction(async (tx) => {
+    // Crear usuario
+    const nuevoUsuario = await tx.usuario.create({
+      data: {
+        nombre: matricula.nombre,
+        apellidoPaterno: matricula.apellidoPaterno,
+        apellidoMaterno: matricula.apellidoMaterno,
+        dni: matricula.dni,
+        celular: matricula.telefono,
+        correo: matricula.email,
+        password: passwordHash,
+        rol: "ESTUDIANTE",
+        activo: true,
+      }
+    });
+
+    // Crear estudiante
+    const nuevoEstudiante = await tx.estudiante.create({
+      data: {
+        usuarioId: nuevoUsuario.id,
+        fechaNacimiento: new Date(),
+      }
+    });
+
+    // Actualizar matrícula: aprobar y vincular con estudiante
+    const matriculaActualizada = await tx.matricula.update({
+      where: { id: matriculaId },
+      data: { 
+        estado: "APROBADA",
+        estudianteId: nuevoEstudiante.id
+      },
+    });
+
+    return matriculaActualizada;
+  });
+
+  return resultado;
 };
 
 export const rechazarMatriculaService = async (id) => {
