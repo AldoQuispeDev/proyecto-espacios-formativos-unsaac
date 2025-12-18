@@ -1,6 +1,7 @@
 // src/pages/Nosotros.jsx
 
 import { useNavigate } from "react-router-dom";
+import Icon from "../components/Icon";
 import "./Nosotros.css";
 
 export default function Nosotros() {
@@ -10,41 +11,41 @@ export default function Nosotros() {
     {
       nombre: "Dr. Carlos Mendoza Quispe",
       cargo: "Director General",
-      foto: "👨‍💼",
+      foto: "person-badge",
       descripcion: "Docente con 20 años de experiencia en preparación preuniversitaria",
     },
     {
       nombre: "Mg. María Elena Huamán",
       cargo: "Directora Académica",
-      foto: "👩‍🏫",
+      foto: "person-video3",
       descripcion: "Especialista en metodologías de enseñanza y evaluación",
     },
     {
       nombre: "Lic. Roberto Flores Ccama",
       cargo: "Coordinador de Ciclos",
-      foto: "👨‍🏫",
+      foto: "person-video3",
       descripcion: "Coordinador de programas ordinarios e intensivos",
     },
   ];
 
   const logros = [
     {
-      icono: "🏆",
+      icono: "trophy-fill",
       titulo: "95% de Ingresantes",
       descripcion: "Tasa de ingreso a la UNSAAC en los últimos 5 años",
     },
     {
-      icono: "👨‍🎓",
+      icono: "mortarboard",
       titulo: "+5000 Estudiantes",
       descripcion: "Preparados exitosamente desde nuestra fundación",
     },
     {
-      icono: "📚",
+      icono: "book",
       titulo: "15 Años de Experiencia",
       descripcion: "Formando a los futuros profesionales del Cusco",
     },
     {
-      icono: "⭐",
+      icono: "star-fill",
       titulo: "Docentes Calificados",
       descripcion: "Equipo de profesionales especializados por área",
     },
@@ -72,7 +73,9 @@ export default function Nosotros() {
       <section className="mision-vision-section">
         <div className="mision-vision-grid">
           <div className="card-mision-vision">
-            <div className="card-icon">🎯</div>
+            <div className="card-icon">
+              <Icon name="bullseye" size="xl" title="Misión" />
+            </div>
             <h3>Misión</h3>
             <p>
               Brindar educación preuniversitaria de calidad, formando estudiantes
@@ -84,7 +87,9 @@ export default function Nosotros() {
           </div>
 
           <div className="card-mision-vision">
-            <div className="card-icon">🌟</div>
+            <div className="card-icon">
+              <Icon name="star-fill" size="xl" title="Visión" />
+            </div>
             <h3>Visión</h3>
             <p>
               Ser la academia preuniversitaria líder en la región Cusco,
@@ -155,7 +160,9 @@ export default function Nosotros() {
             {logros.map((logro, index) => (
               <div key={index} className="col-12 col-md-6 col-lg-3">
                 <div className="logro-card h-100">
-                  <div className="logro-icono">{logro.icono}</div>
+                  <div className="logro-icono">
+                    <Icon name={logro.icono} size="xl" title={logro.titulo} />
+                  </div>
                   <h3>{logro.titulo}</h3>
                   <p>{logro.descripcion}</p>
                 </div>
@@ -171,7 +178,9 @@ export default function Nosotros() {
         <div className="directores-grid">
           {directores.map((director, index) => (
             <div key={index} className="director-card">
-              <div className="director-foto">{director.foto}</div>
+              <div className="director-foto">
+                <Icon name={director.foto} size="xl" title={director.nombre} />
+              </div>
               <h3>{director.nombre}</h3>
               <p className="director-cargo">{director.cargo}</p>
               <p className="director-descripcion">{director.descripcion}</p>
@@ -187,28 +196,36 @@ export default function Nosotros() {
           <div className="row g-4">
             <div className="col-12 col-sm-6 col-lg-3">
               <div className="valor-item h-100 d-flex flex-column align-items-center">
-                <span className="valor-icono">💪</span>
+                <span className="valor-icono">
+                  <Icon name="award" size="xl" title="Excelencia" />
+                </span>
                 <h4>Excelencia</h4>
                 <p className="text-center">Compromiso con la calidad educativa</p>
               </div>
             </div>
             <div className="col-12 col-sm-6 col-lg-3">
               <div className="valor-item h-100 d-flex flex-column align-items-center">
-                <span className="valor-icono">🤝</span>
+                <span className="valor-icono">
+                  <Icon name="hand-thumbs-up" size="xl" title="Integridad" />
+                </span>
                 <h4>Integridad</h4>
                 <p className="text-center">Honestidad y transparencia en todo momento</p>
               </div>
             </div>
             <div className="col-12 col-sm-6 col-lg-3">
               <div className="valor-item h-100 d-flex flex-column align-items-center">
-                <span className="valor-icono">🎓</span>
+                <span className="valor-icono">
+                  <Icon name="mortarboard" size="xl" title="Responsabilidad" />
+                </span>
                 <h4>Responsabilidad</h4>
                 <p className="text-center">Compromiso con el aprendizaje de nuestros estudiantes</p>
               </div>
             </div>
             <div className="col-12 col-sm-6 col-lg-3">
               <div className="valor-item h-100 d-flex flex-column align-items-center">
-                <span className="valor-icono">🌱</span>
+                <span className="valor-icono">
+                  <Icon name="lightbulb" size="xl" title="Innovación" />
+                </span>
                 <h4>Innovación</h4>
                 <p className="text-center">Adaptación constante a nuevas metodologías</p>
               </div>

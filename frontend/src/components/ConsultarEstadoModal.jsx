@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { consultarEstadoMatricula } from "../api/matriculas";
+import Icon from "./Icon";
 import "./ConsultarEstadoModal.css";
 
-export default function ConsultarEstadoModal({ isOpen, onClose }) {
+export default function ConsultarEstadoModal({ isOpen, onClose, onContinueMatricula }) {
   const navigate = useNavigate();
   const [dni, setDni] = useState("");
   const [matricula, setMatricula] = useState(null);
@@ -26,7 +27,17 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
 
     try {
       const res = await consultarEstadoMatricula(dni);
-      setMatricula(res.data);
+      const matriculaData = res.data;
+      
+      // Si la matrícula está pendiente, redirigir al paso 3 para subir voucher
+      if (matriculaData.estado === 'PENDIENTE' && onContinueMatricula) {
+        onContinueMatricula(matriculaData);
+        onClose();
+        resetForm();
+        return;
+      }
+      
+      setMatricula(matriculaData);
     } catch (err) {
       if (err.response?.status === 404) {
         setNotFound(true);
@@ -54,9 +65,9 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
 
   const getEstadoBadge = (estado) => {
     const estados = {
-      PENDIENTE: { color: "warning", icon: "⏳", text: "Pendiente" },
-      APROBADA: { color: "success", icon: "✅", text: "Aprobada" },
-      RECHAZADA: { color: "danger", icon: "❌", text: "Rechazada" },
+      PENDIENTE: { color: "warning", icon: "hourglass-split", text: "Pendiente" },
+      APROBADA: { color: "success", icon: "check-circle-fill", text: "Aprobada" },
+      RECHAZADA: { color: "danger", icon: "x-circle-fill", text: "Rechazada" },
     };
     return estados[estado] || estados.PENDIENTE;
   };
@@ -79,7 +90,7 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
           <form onSubmit={handleConsultar} className="consultar-form">
             <div className="form-group">
               <label htmlFor="dni">
-                <span className="label-icon">🆔</span>
+                <span className="label-icon"><Icon name="person-vcard" size="sm" /></span>
                 Número de DNI
               </label>
               <input
@@ -101,7 +112,7 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
 
             {error && (
               <div className="alert alert-error">
-                <span className="alert-icon">⚠️</span>
+                <span className="alert-icon"><Icon name="exclamation-triangle" size="sm" /></span>
                 <span>{error}</span>
               </div>
             )}
@@ -114,7 +125,7 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
                 </>
               ) : (
                 <>
-                  <span>🔍</span>
+                  <Icon name="search" size="sm" />
                   Consultar Estado
                 </>
               )}
@@ -125,7 +136,7 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
         {notFound && (
           <div className="resultado-container">
             <div className="resultado-not-found">
-              <div className="not-found-icon">🔍</div>
+              <div className="not-found-icon"><Icon name="search" size="xl" /></div>
               <h3>No se encontró matrícula</h3>
               <p>No existe una matrícula registrada con el DNI <strong>{dni}</strong></p>
               <p className="hint">Verifica que el DNI sea correcto o matricúlate si aún no lo has hecho.</p>
@@ -139,7 +150,7 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
         {matricula && (
           <div className="resultado-container">
             <div className={`estado-badge estado-${getEstadoBadge(matricula.estado).color}`}>
-              <span className="estado-icon">{getEstadoBadge(matricula.estado).icon}</span>
+              <span className="estado-icon"><Icon name={getEstadoBadge(matricula.estado).icon} size="sm" /></span>
               <span className="estado-text">{getEstadoBadge(matricula.estado).text}</span>
             </div>
 
@@ -148,49 +159,49 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
 
               <div className="info-grid">
                 <div className="info-item">
-                  <span className="info-label">👤 Nombre Completo</span>
+                  <span className="info-label"><Icon name="person" size="sm" /> Nombre Completo</span>
                   <span className="info-value">
                     {matricula.nombre} {matricula.apellidoPaterno} {matricula.apellidoMaterno}
                   </span>
                 </div>
 
                 <div className="info-item">
-                  <span className="info-label">🆔 DNI</span>
+                  <span className="info-label"><Icon name="person-vcard" size="sm" /> DNI</span>
                   <span className="info-value">{matricula.dni}</span>
                 </div>
 
                 <div className="info-item">
-                  <span className="info-label">📱 Teléfono</span>
+                  <span className="info-label"><Icon name="telephone" size="sm" /> Teléfono</span>
                   <span className="info-value">{matricula.telefono}</span>
                 </div>
 
                 <div className="info-item">
-                  <span className="info-label">📧 Email</span>
+                  <span className="info-label"><Icon name="envelope" size="sm" /> Email</span>
                   <span className="info-value">{matricula.email || "No proporcionado"}</span>
                 </div>
 
                 <div className="info-item">
-                  <span className="info-label">🎓 Modalidad</span>
+                  <span className="info-label"><Icon name="mortarboard" size="sm" /> Modalidad</span>
                   <span className="info-value">{matricula.modalidad?.nombre || "—"}</span>
                 </div>
 
                 <div className="info-item">
-                  <span className="info-label">👥 Grupo</span>
+                  <span className="info-label"><Icon name="people" size="sm" /> Grupo</span>
                   <span className="info-value">Grupo {matricula.grupo?.nombre || "—"}</span>
                 </div>
 
                 <div className="info-item">
-                  <span className="info-label">📚 Carrera Principal</span>
+                  <span className="info-label"><Icon name="book" size="sm" /> Carrera Principal</span>
                   <span className="info-value">{matricula.carreraPrincipal?.nombre || "—"}</span>
                 </div>
 
                 <div className="info-item">
-                  <span className="info-label">💳 Tipo de Pago</span>
+                  <span className="info-label"><Icon name="credit-card" size="sm" /> Tipo de Pago</span>
                   <span className="info-value">{matricula.tipoPago}</span>
                 </div>
 
                 <div className="info-item">
-                  <span className="info-label">📅 Fecha de Registro</span>
+                  <span className="info-label"><Icon name="calendar3" size="sm" /> Fecha de Registro</span>
                   <span className="info-value">
                     {new Date(matricula.createdAt).toLocaleDateString("es-PE")}
                   </span>
@@ -199,7 +210,7 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
 
               {matricula.estado === "PENDIENTE" && (
                 <div className="alert alert-info">
-                  <span className="alert-icon">⏳</span>
+                  <span className="alert-icon"><Icon name="hourglass-split" size="sm" /></span>
                   <div>
                     <strong>Tu matrícula está en revisión</strong>
                     <p>El administrador está revisando tu solicitud. Te notificaremos por WhatsApp cuando haya una respuesta.</p>
@@ -209,7 +220,7 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
 
               {matricula.estado === "APROBADA" && (
                 <div className="alert alert-success">
-                  <span className="alert-icon">🎉</span>
+                  <span className="alert-icon"><Icon name="emoji-smile" size="sm" /></span>
                   <div>
                     <strong>¡Felicitaciones! Tu matrícula fue aprobada</strong>
                     <p>Ya puedes ingresar al aula virtual con tu correo y DNI como contraseña.</p>
@@ -220,15 +231,15 @@ export default function ConsultarEstadoModal({ isOpen, onClose }) {
                         navigate("/login", { state: { selectedRole: "ESTUDIANTE" } });
                       }}
                     >
-                      🎓 Ingresar al Aula Virtual →
+                      <Icon name="mortarboard" size="sm" /> Ingresar al Aula Virtual →
                     </button>
-                  </div>
+                  </div>E
                 </div>
               )}
 
               {matricula.estado === "RECHAZADA" && (
                 <div className="alert alert-danger">
-                  <span className="alert-icon">❌</span>
+                  <span className="alert-icon"><Icon name="x-circle-fill" size="sm" /></span>
                   <div>
                     <strong>Tu matrícula fue rechazada</strong>
                     <p>Por favor, contacta con la administración para más información.</p>

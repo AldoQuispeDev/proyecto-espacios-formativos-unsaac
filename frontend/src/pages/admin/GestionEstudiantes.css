@@ -261,8 +261,9 @@
 }
 
 .btn-edit {
-  background: #3b82f6;
-  color: white;
+  background: #1574d3 !important;
+  color: white !important;
+  border: 2px solid #0dafd8 !important;
 }
 
 .btn-edit:hover {

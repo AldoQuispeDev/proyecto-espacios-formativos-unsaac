@@ -1,6 +1,7 @@
 // src/components/AdminFooter.jsx
 
 import { useState, useEffect } from "react";
+import Icon from "./Icon";
 import "./AdminFooter.css";
 
 export default function AdminFooter() {
@@ -19,16 +20,16 @@ export default function AdminFooter() {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { name: "Soporte Técnico", url: "/admin/soporte", icon: "🛠️" },
-    { name: "Documentación", url: "/admin/docs", icon: "📖" },
-    { name: "Términos de Uso", url: "/admin/terminos", icon: "📜" },
-    { name: "Política de Privacidad", url: "/admin/privacidad", icon: "🔒" },
+    { name: "Soporte Técnico", url: "/admin/soporte", icon: "tools" },
+    { name: "Documentación", url: "/admin/docs", icon: "book-half" },
+    { name: "Términos de Uso", url: "/admin/terminos", icon: "file-earmark-text" },
+    { name: "Política de Privacidad", url: "/admin/privacidad", icon: "lock" },
   ];
 
   const socialLinks = [
-    { name: "Facebook", url: "https://facebook.com/academiapre", icon: "📘" },
-    { name: "Instagram", url: "https://instagram.com/academiapre", icon: "📷" },
-    { name: "YouTube", url: "https://youtube.com/@academiapre", icon: "🎥" },
+    { name: "Facebook", url: "https://facebook.com/academiapre", icon: "facebook" },
+    { name: "Instagram", url: "https://instagram.com/academiapre", icon: "instagram" },
+    { name: "YouTube", url: "https://youtube.com/@academiapre", icon: "youtube" },
   ];
 
   const formatLastUpdate = () => {
@@ -49,15 +50,21 @@ export default function AdminFooter() {
           </p>
           <div className="footer-contact">
             <p className="contact-item">
-              <span className="contact-icon">📧</span>
+              <span className="contact-icon">
+                <Icon name="envelope" size="md" />
+              </span>
               info@academiapre.edu.pe
             </p>
             <p className="contact-item">
-              <span className="contact-icon">📞</span>
+              <span className="contact-icon">
+                <Icon name="telephone" size="md" />
+              </span>
               +51 984 123 456
             </p>
             <p className="contact-item">
-              <span className="contact-icon">📍</span>
+              <span className="contact-icon">
+                <Icon name="geo-alt" size="md" />
+              </span>
               Av. La Cultura 123, Cusco
             </p>
           </div>
@@ -70,7 +77,9 @@ export default function AdminFooter() {
             {quickLinks.map((link, index) => (
               <li key={index}>
                 <a href={link.url} className="footer-link">
-                  <span className="link-icon">{link.icon}</span>
+                  <span className="link-icon">
+                    <Icon name={link.icon} size="sm" />
+                  </span>
                   {link.name}
                 </a>
               </li>
@@ -91,7 +100,9 @@ export default function AdminFooter() {
                 className="social-link"
                 title={social.name}
               >
-                <span className="social-icon">{social.icon}</span>
+                <span className="social-icon">
+                  <Icon name={social.icon} size="lg" />
+                </span>
               </a>
             ))}
           </div>
@@ -129,7 +140,7 @@ export default function AdminFooter() {
             © {currentYear} Academia Pre UNSAAC. Todos los derechos reservados.
           </p>
           <p className="developer">
-            Desarrollado con ❤️ por el Equipo de Desarrollo
+            Desarrollado con <Icon name="heart-fill" size="sm" color="danger" /> por el Equipo de Desarrollo
           </p>
         </div>
       </div>

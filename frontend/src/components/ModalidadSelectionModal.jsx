@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { obtenerModalidades } from "../api/catalogos";
 import MatriculaRapidaModal from "./MatriculaRapidaModal";
+import Icon from "./Icon";
 import "./ModalidadSelectionModal.css";
 
 export default function ModalidadSelectionModal({ isOpen, onClose }) {
@@ -55,7 +56,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
     
     if (nombreLower.includes("dirimencia")) {
       return {
-        icon: "🎯",
+        icon: "bullseye",
         color: "gold",
         description: "Para alumnos destacados de las I.E.",
         duracion: "3 semanas",
@@ -66,7 +67,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
     
     if (nombreLower.includes("ordinario") && !nombreLower.includes("cepru")) {
       return {
-        icon: "📘",
+        icon: "book",
         color: "blue",
         description: "Rumbo al examen de admisión ordinario",
         duracion: "7 semanas",
@@ -77,7 +78,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
     
     if (nombreLower.includes("cepru") && nombreLower.includes("primera")) {
       return {
-        icon: "🎓",
+        icon: "mortarboard",
         color: "green",
         description: "Preparación para CEPRU - Primera Oportunidad",
         duracion: "8 semanas",
@@ -88,7 +89,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
     
     if (nombreLower.includes("cepru") && nombreLower.includes("ordinario")) {
       return {
-        icon: "📚",
+        icon: "book-half",
         color: "purple",
         description: "Preparación para CEPRU - Ordinario",
         duracion: "10 semanas",
@@ -99,7 +100,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
     
     if (nombreLower.includes("primera")) {
       return {
-        icon: "⭐",
+        icon: "star-fill",
         color: "orange",
         description: "Primera Oportunidad - Examen de admisión",
         duracion: "6 semanas",
@@ -110,7 +111,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
     
     // Default
     return {
-      icon: "📖",
+      icon: "journal-text",
       color: "gray",
       description: "Ciclo de preparación académica",
       duracion: "Variable",
@@ -138,7 +139,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
           </div>
         ) : error ? (
           <div className="modalidad-error">
-            <p>⚠️ {error}</p>
+            <p><Icon name="exclamation-triangle" size="sm" /> {error}</p>
             <button onClick={fetchModalidades} className="btn-retry">
               Reintentar
             </button>
@@ -159,7 +160,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
                     onClick={() => handleSelectModalidad(modalidad)}
                   >
                     <div className="modalidad-card-header">
-                      <div className="modalidad-icon">{config.icon}</div>
+                      <div className="modalidad-icon"><Icon name={config.icon} size="lg" /></div>
                       <span className="modalidad-badge">PRESENCIAL</span>
                     </div>
 
@@ -168,7 +169,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
 
                     <div className="modalidad-details">
                       <div className="modalidad-detail-item">
-                        <span className="detail-icon">📅</span>
+                        <span className="detail-icon"><Icon name="calendar3" size="sm" /></span>
                         <div className="detail-text">
                           <span className="detail-label">Duración</span>
                           <span className="detail-value">{config.duracion}</span>
@@ -176,7 +177,7 @@ export default function ModalidadSelectionModal({ isOpen, onClose }) {
                       </div>
 
                       <div className="modalidad-detail-item">
-                        <span className="detail-icon">🕐</span>
+                        <span className="detail-icon"><Icon name="clock" size="sm" /></span>
                         <div className="detail-text">
                           <span className="detail-label">Turno</span>
                           <span className="detail-value">{config.turno}</span>

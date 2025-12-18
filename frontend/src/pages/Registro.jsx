@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import Icon from "../components/Icon";
 import "./Registro.css";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -47,7 +48,7 @@ export default function Registro() {
         { withCredentials: true }
       );
 
-      setMensaje("✅ " + response.data.message);
+      setMensaje(response.data.message);
       setTipoMensaje("success");
 
       // Redirigir al aula virtual después de 1.5 segundos
@@ -60,16 +61,16 @@ export default function Registro() {
       const status = error.response?.status;
 
       if (status === 404) {
-        setMensaje("❌ No se encontró una matrícula con este correo");
+        setMensaje("No se encontró una matrícula con este correo");
         setTipoMensaje("error");
       } else if (status === 403) {
-        setMensaje("⏳ Tu matrícula aún no ha sido aprobada. Por favor espera la validación del administrador.");
+        setMensaje("Tu matrícula aún no ha sido aprobada. Por favor espera la validación del administrador.");
         setTipoMensaje("warning");
       } else if (status === 409) {
-        setMensaje("❌ Este correo ya está registrado. Intenta iniciar sesión.");
+        setMensaje("Este correo ya está registrado. Intenta iniciar sesión.");
         setTipoMensaje("error");
       } else {
-        setMensaje("❌ " + errorMsg);
+        setMensaje(errorMsg);
         setTipoMensaje("error");
       }
     } finally {
@@ -82,7 +83,7 @@ export default function Registro() {
       <div className="registro-card">
         <div className="registro-header">
           <div className="icon-circle">
-            <span>🎓</span>
+            <Icon name="mortarboard" size="xl" />
           </div>
           <h2>Registro de Estudiante</h2>
           <p>Ingresa con tu correo de matrícula aprobada</p>
@@ -91,7 +92,9 @@ export default function Registro() {
         <form onSubmit={handleSubmit} className="registro-form">
           <div className="form-group">
             <label htmlFor="correo">
-              <span className="label-icon">📧</span>
+              <span className="label-icon">
+                <Icon name="envelope" size="sm" />
+              </span>
               Correo Electrónico
             </label>
             <input
@@ -111,7 +114,9 @@ export default function Registro() {
 
           <div className="form-group">
             <label htmlFor="password">
-              <span className="label-icon">🔒</span>
+              <span className="label-icon">
+                <Icon name="lock" size="sm" />
+              </span>
               Contraseña
             </label>
             <input
@@ -129,7 +134,9 @@ export default function Registro() {
 
           <div className="form-group">
             <label htmlFor="confirmPassword">
-              <span className="label-icon">🔒</span>
+              <span className="label-icon">
+                <Icon name="lock" size="sm" />
+              </span>
               Confirmar Contraseña
             </label>
             <input
@@ -159,7 +166,7 @@ export default function Registro() {
               </>
             ) : (
               <>
-                <span>✨</span>
+                <Icon name="check-circle" size="md" />
                 Crear Cuenta
               </>
             )}
@@ -176,7 +183,9 @@ export default function Registro() {
         </div>
 
         <div className="info-box">
-          <span className="info-icon">ℹ️</span>
+          <span className="info-icon">
+            <Icon name="info-circle" size="lg" />
+          </span>
           <div>
             <strong>Importante:</strong>
             <p>Solo puedes registrarte si tu matrícula fue aprobada por el administrador.</p>

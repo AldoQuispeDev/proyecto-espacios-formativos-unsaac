@@ -1,6 +1,6 @@
 import api from "./client";
 
-// 🔹 Crear nueva matrícula (PÚBLICA - no requiere autenticación)
+// Crear nueva matrícula (PÚBLICA - no requiere autenticación)
 export const crearMatricula = async (formData) => {
   return await api.post("/matriculas", formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -8,7 +8,7 @@ export const crearMatricula = async (formData) => {
   });
 };
 
-// 🔹 Consultar estado de matrícula por DNI (PÚBLICA)
+// Consultar estado de matrícula por DNI (PÚBLICA)
 export const consultarEstadoMatricula = async (dni) => {
   return await api.get(`/matriculas/consultar/${dni}`);
 };

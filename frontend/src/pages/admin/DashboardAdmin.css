@@ -8,12 +8,13 @@
   border-radius: 16px;
   padding: 32px;
   color: white;
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 30px rgba(9, 38, 170, 0.3);
 }
 
 .dashboard-welcome-title {
   font-size: 28px;
   font-weight: 700;
+  color: #ffffff;
 }
 
 .dashboard-welcome-text {
@@ -26,7 +27,7 @@
 .dashboard-section-title {
   font-size: 20px;
   font-weight: 700;
-  color: #1f2937;
+  color: #14335e;
   display: flex;
   align-items: center;
   gap: 8px;

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Icon from "../components/Icon";
 import "./Contacto.css";
 
 export default function Contacto() {
@@ -79,7 +80,9 @@ export default function Contacto() {
         <div className="metodos-grid">
           {/* WHATSAPP */}
           <div className="metodo-card whatsapp-card" onClick={handleWhatsAppClick}>
-            <div className="metodo-icon">💬</div>
+            <div className="metodo-icon icon-3xl text-success">
+              <Icon name="whatsapp" title="WhatsApp" />
+            </div>
             <h3>WhatsApp</h3>
             <p className="metodo-valor">{contactInfo.whatsapp.numero}</p>
             <p className="metodo-descripcion">Respuesta inmediata</p>
@@ -90,7 +93,9 @@ export default function Contacto() {
 
           {/* TELÉFONO */}
           <div className="metodo-card telefono-card">
-            <div className="metodo-icon">📞</div>
+            <div className="metodo-icon icon-3xl text-primary">
+              <Icon name="telephone" title="Teléfono" />
+            </div>
             <h3>Teléfono</h3>
             <p className="metodo-valor">{contactInfo.telefono.principal}</p>
             <p className="metodo-descripcion">Llámanos directamente</p>
@@ -98,13 +103,15 @@ export default function Contacto() {
               className="btn-metodo"
               onClick={() => handleCopyToClipboard(contactInfo.telefono.principal, "teléfono")}
             >
-              {copiedText === "teléfono" ? "✓ Copiado" : "Copiar Número"}
+              {copiedText === "teléfono" ? <><Icon name="check" className="icon-sm text-success" /> Copiado</> : "Copiar Número"}
             </button>
           </div>
 
           {/* EMAIL */}
           <div className="metodo-card email-card">
-            <div className="metodo-icon">📧</div>
+            <div className="metodo-icon icon-3xl text-danger">
+              <Icon name="envelope" title="Correo Electrónico" />
+            </div>
             <h3>Correo Electrónico</h3>
             <p className="metodo-valor">{contactInfo.email.principal}</p>
             <p className="metodo-descripcion">Te respondemos en 24h</p>
@@ -126,7 +133,9 @@ export default function Contacto() {
             className="red-card facebook-card"
             onClick={() => handleSocialClick(contactInfo.redes.facebook)}
           >
-            <div className="red-icon">📘</div>
+            <div className="red-icon icon-3xl text-primary">
+              <Icon name="facebook" title="Facebook" />
+            </div>
             <h3>Facebook</h3>
             <p>@academiapre</p>
             <span className="red-badge">Síguenos</span>
@@ -136,7 +145,9 @@ export default function Contacto() {
             className="red-card tiktok-card"
             onClick={() => handleSocialClick(contactInfo.redes.tiktok)}
           >
-            <div className="red-icon">🎵</div>
+            <div className="red-icon icon-3xl text-dark">
+              <Icon name="music-note-beamed" title="TikTok" />
+            </div>
             <h3>TikTok</h3>
             <p>@academiapre</p>
             <span className="red-badge">Síguenos</span>
@@ -146,7 +157,9 @@ export default function Contacto() {
             className="red-card instagram-card"
             onClick={() => handleSocialClick(contactInfo.redes.instagram)}
           >
-            <div className="red-icon">📷</div>
+            <div className="red-icon icon-3xl text-danger">
+              <Icon name="instagram" title="Instagram" />
+            </div>
             <h3>Instagram</h3>
             <p>@academiapre</p>
             <span className="red-badge">Síguenos</span>
@@ -156,7 +169,9 @@ export default function Contacto() {
             className="red-card youtube-card"
             onClick={() => handleSocialClick(contactInfo.redes.youtube)}
           >
-            <div className="red-icon">🎥</div>
+            <div className="red-icon icon-3xl text-danger">
+              <Icon name="youtube" title="YouTube" />
+            </div>
             <h3>YouTube</h3>
             <p>@academiapre</p>
             <span className="red-badge">Suscríbete</span>
@@ -169,7 +184,9 @@ export default function Contacto() {
         <div className="info-grid">
           {/* DIRECCIÓN */}
           <div className="info-card">
-            <div className="info-icon">📍</div>
+            <div className="info-icon icon-2xl text-danger">
+              <Icon name="geo-alt" title="Ubicación" />
+            </div>
             <h3>Nuestra Ubicación</h3>
             <p className="info-principal">{contactInfo.direccion.calle}</p>
             <p className="info-secundaria">{contactInfo.direccion.distrito}</p>
@@ -186,7 +203,9 @@ export default function Contacto() {
 
           {/* HORARIOS */}
           <div className="info-card">
-            <div className="info-icon">🕐</div>
+            <div className="info-icon icon-2xl text-primary">
+              <Icon name="clock" title="Horario" />
+            </div>
             <h3>Horario de Atención</h3>
             <div className="horarios-lista">
               <div className="horario-item">
@@ -206,7 +225,9 @@ export default function Contacto() {
 
           {/* CORREOS ADICIONALES */}
           <div className="info-card">
-            <div className="info-icon">✉️</div>
+            <div className="info-icon icon-2xl text-info">
+              <Icon name="envelope-fill" title="Correos" />
+            </div>
             <h3>Correos por Área</h3>
             <div className="correos-lista">
               <div className="correo-item">
@@ -231,8 +252,8 @@ export default function Contacto() {
         <h2>¿Listo para comenzar tu preparación?</h2>
         <p>Contáctanos ahora y da el primer paso hacia tu ingreso a la UNSAAC</p>
         <div className="cta-buttons">
-          <button onClick={handleWhatsAppClick} className="btn-cta-primary">
-            💬 Chatear por WhatsApp
+          <button onClick={handleWhatsAppClick} className="btn-cta-primary icon-inline icon-text-gap">
+            <Icon name="whatsapp" className="icon-md text-success" /> Chatear por WhatsApp
           </button>
           <button onClick={() => navigate("/")} className="btn-cta-secondary">
             Ver Ciclos Disponibles
@@ -242,8 +263,8 @@ export default function Contacto() {
 
       {/* NOTIFICACIÓN DE COPIADO */}
       {copiedText && (
-        <div className="toast-notification">
-          ✓ {copiedText} copiado al portapapeles
+        <div className="toast-notification icon-inline icon-text-gap">
+          <Icon name="check-circle" className="icon-sm" /> {copiedText} copiado al portapapeles
         </div>
       )}
     </div>

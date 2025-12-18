@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import AdminSidebarLayout from "../../components/AdminSidebarLayout"; 
+import Icon from "../../components/Icon";
 import api from "../../api/client";
 import "./ValidarMatricula.css";
 
@@ -39,11 +40,11 @@ export default function ValidarMatricula() {
 
     try {
       await api.put(`/matriculas/${id}/aprobar`, {});
-      alert(`✅ Matrícula aprobada\n\n📱 Mensaje para enviar:\n${mensaje}\n\nWhatsApp: ${telefono}`);
+      alert(`Matrícula aprobada\n\nMensaje para enviar:\n${mensaje}\n\nWhatsApp: ${telefono}`);
       setMatriculas((prev) => prev.filter((m) => m.id !== id));
     } catch (error) {
       console.error("Error al aprobar matrícula:", error);
-      alert("❌ Error al aprobar matrícula");
+      alert("Error al aprobar matrícula");
     }
   };
 
@@ -56,11 +57,11 @@ export default function ValidarMatricula() {
 
     try {
       await api.put(`/matriculas/${id}/rechazar`, { motivo });
-      alert(`🚫 Matrícula rechazada\n\n📱 Mensaje para enviar:\n${mensaje}\n\nWhatsApp: ${telefono}`);
+      alert(`Matrícula rechazada\n\nMensaje para enviar:\n${mensaje}\n\nWhatsApp: ${telefono}`);
       setMatriculas((prev) => prev.filter((m) => m.id !== id));
     } catch (error) {
       console.error("Error al rechazar matrícula:", error);
-      alert("❌ Error al rechazar matrícula");
+      alert("Error al rechazar matrícula");
     }
   };
 
@@ -85,7 +86,7 @@ export default function ValidarMatricula() {
 
         {matriculas.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-state-icon">🎉</div>
+            <Icon name="emoji-smile" size="xl" className="empty-state-icon" />
             <h2>No hay matrículas pendientes</h2>
             <p>Todas las solicitudes han sido procesadas</p>
           </div>
@@ -101,7 +102,7 @@ export default function ValidarMatricula() {
 
                 <div className="card-body">
                   <div className="info-row mb-3">
-                    <span className="info-icon">👤</span>
+                    <Icon name="person" className="info-icon" />
                     <div className="info-content flex-grow-1">
                       <div className="info-label">Nombre Completo</div>
                       <div className="info-value">
@@ -111,7 +112,7 @@ export default function ValidarMatricula() {
                   </div>
 
                   <div className="info-row mb-3">
-                    <span className="info-icon">🆔</span>
+                    <Icon name="card-text" className="info-icon" />
                     <div className="info-content flex-grow-1">
                       <div className="info-label">DNI</div>
                       <div className="info-value">{m.dni}</div>
@@ -119,7 +120,7 @@ export default function ValidarMatricula() {
                   </div>
 
                   <div className="info-row mb-3">
-                    <span className="info-icon">📱</span>
+                    <Icon name="telephone" className="info-icon" />
                     <div className="info-content flex-grow-1">
                       <div className="info-label">Teléfono</div>
                       <div className="info-value">{m.telefono}</div>
@@ -127,7 +128,7 @@ export default function ValidarMatricula() {
                   </div>
 
                   <div className="info-row mb-3">
-                    <span className="info-icon">📧</span>
+                    <Icon name="envelope" className="info-icon" />
                     <div className="info-content flex-grow-1">
                       <div className="info-label">Email</div>
                       <div className="info-value">{m.email || "No proporcionado"}</div>
@@ -135,7 +136,7 @@ export default function ValidarMatricula() {
                   </div>
 
                   <div className="info-row mb-3">
-                    <span className="info-icon">🏫</span>
+                    <Icon name="building" className="info-icon" />
                     <div className="info-content flex-grow-1">
                       <div className="info-label">Colegio de Procedencia</div>
                       <div className="info-value">{m.colegioProcedencia || "No proporcionado"}</div>
@@ -143,7 +144,7 @@ export default function ValidarMatricula() {
                   </div>
 
                   <div className="info-row mb-3">
-                    <span className="info-icon">🎓</span>
+                    <Icon name="mortarboard" className="info-icon" />
                     <div className="info-content flex-grow-1">
                       <div className="info-label">Modalidad / Grupo</div>
                       <div className="info-value">
@@ -153,7 +154,7 @@ export default function ValidarMatricula() {
                   </div>
 
                   <div className="info-row mb-3">
-                    <span className="info-icon">📚</span>
+                    <Icon name="book" className="info-icon" />
                     <div className="info-content flex-grow-1">
                       <div className="info-label">Carrera Principal</div>
                       <div className="info-value">{m.carreraPrincipal?.nombre}</div>
@@ -161,7 +162,7 @@ export default function ValidarMatricula() {
                   </div>
 
                   <div className="info-row mb-3">
-                    <span className="info-icon">💳</span>
+                    <Icon name="credit-card" className="info-icon" />
                     <div className="info-content flex-grow-1">
                       <div className="info-label">Tipo de Pago</div>
                       <div className="info-value">{m.tipoPago}</div>
@@ -170,13 +171,13 @@ export default function ValidarMatricula() {
 
                   {/* Comprobante */}
                   <div className="comprobante-section mt-3">
-                    <h4 className="mb-3">📎 Comprobante de Pago</h4>
+                    <h4 className="mb-3"><Icon name="paperclip" /> Comprobante de Pago</h4>
                     {m.comprobanteUrl ? (
                       <button
                         className="btn-ver-comprobante w-100"
                         onClick={() => window.open(`http://localhost:4000${m.comprobanteUrl}`, "_blank")}
                       >
-                        <span>👁️</span>
+                        <Icon name="eye" />
                         Ver Comprobante
                       </button>
                     ) : (
@@ -192,14 +193,14 @@ export default function ValidarMatricula() {
                     onClick={() => aprobarMatricula(m.id, m.telefono)}
                     className="btn-action btn-aprobar flex-fill"
                   >
-                    <span>✓</span>
+                    <Icon name="check-lg" />
                     Aprobar
                   </button>
                   <button
                     onClick={() => rechazarMatricula(m.id, m.telefono)}
                     className="btn-action btn-rechazar flex-fill"
                   >
-                    <span>✕</span>
+                    <Icon name="x-lg" />
                     Rechazar
                   </button>
                 </div>

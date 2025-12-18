@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import AdminSidebarLayout from "../../components/AdminSidebarLayout";
 import EstudianteFormModal from "../../components/EstudianteFormModal"; 
 import { getEstudiantes, toggleEstudianteActive } from "../../api/estudiantes";
+import Icon from "../../components/Icon";
 import './GestionEstudiantes.css';
 
 export default function GestionEstudiantes() {
@@ -73,20 +74,20 @@ export default function GestionEstudiantes() {
         {/* HEADER */}
         <div className="estudiantes-header mb-4">
           <h2 className="estudiantes-title mb-3 mb-lg-0">
-            <span className="title-icon">🎓</span>
+            <Icon name="mortarboard" size="lg" className="title-icon" />
             Control de Perfiles
           </h2>
           <div className="estudiantes-stats d-flex flex-column flex-lg-row gap-3">
             <div className="stat-badge">
-              <span>📊</span>
+              <Icon name="bar-chart" />
               Total: {estudiantes.length}
             </div>
             <div className="stat-badge active">
-              <span>✅</span>
+              <Icon name="check-circle-fill" />
               Activos: {activeCount}
             </div>
             <div className="stat-badge inactive">
-              <span>❌</span>
+              <Icon name="x-circle-fill" />
               Inactivos: {inactiveCount}
             </div>
           </div>
@@ -96,7 +97,7 @@ export default function GestionEstudiantes() {
         <div className="filters-bar mb-4">
           <div className="filters-group flex-grow-1">
             <div className="search-wrapper flex-grow-1">
-              <span className="search-icon">🔍</span>
+              <Icon name="search" className="search-icon" />
               <input
                 type="text"
                 placeholder="Buscar por nombre, DNI o correo..."
@@ -110,9 +111,9 @@ export default function GestionEstudiantes() {
               onChange={(e) => setFilterActive(e.target.value)}
               className="filter-select"
             >
-              <option value="true">✅ Activos</option>
-              <option value="false">❌ Desactivados</option>
-              <option value="all">📋 Todos</option>
+              <option value="true"><Icon name="check-circle-fill" size="sm" /> Activos</option>
+              <option value="false"><Icon name="x-circle-fill" size="sm" /> Desactivados</option>
+              <option value="all"><Icon name="file-text" size="sm" /> Todos</option>
             </select>
           </div>
 
@@ -120,7 +121,7 @@ export default function GestionEstudiantes() {
             onClick={handleOpenCreateModal} 
             className="btn-add-student"
           >
-            <span>➕</span>
+            <Icon name="plus-circle" />
             Añadir Estudiante
           </button>
         </div>
@@ -128,7 +129,7 @@ export default function GestionEstudiantes() {
         {/* ERROR MESSAGE */}
         {error && (
           <div className="error-message mb-4">
-            <span className="error-icon">⚠️</span>
+            <Icon name="exclamation-triangle" className="error-icon" />
             {error}
           </div>
         )}
@@ -141,7 +142,7 @@ export default function GestionEstudiantes() {
           </div>
         ) : estudiantes.length === 0 ? (
           <div className="empty-state text-center py-5">
-            <div className="empty-icon">📭</div>
+            <Icon name="inbox" size="xl" className="empty-icon" />
             <h3 className="empty-title mb-2">
               {searchQuery ? 'No se encontraron resultados' : 'No hay estudiantes registrados'}
             </h3>
@@ -171,23 +172,23 @@ export default function GestionEstudiantes() {
                     </td>
                     <td>
                       <div className="student-info d-flex flex-column gap-1">
-                        <span className="info-primary">📋 {e.usuario.dni}</span>
-                        <span className="info-secondary">📧 {e.usuario.correo}</span>
+                        <span className="info-primary"><Icon name="file-text" size="sm" /> {e.usuario.dni}</span>
+                        <span className="info-secondary"><Icon name="envelope" size="sm" /> {e.usuario.correo}</span>
                       </div>
                     </td>
                     <td>
                       <div className="student-info d-flex flex-column gap-1">
                         <span className="info-primary">
-                          {e.nombreApoderado ? `👤 ${e.nombreApoderado}` : '—'}
+                          {e.nombreApoderado ? <><Icon name="person" size="sm" /> {e.nombreApoderado}</> : '—'}
                         </span>
                         {e.telefonoApoderado && (
-                          <span className="info-secondary">📞 {e.telefonoApoderado}</span>
+                          <span className="info-secondary"><Icon name="telephone" size="sm" /> {e.telefonoApoderado}</span>
                         )}
                       </div>
                     </td>
                     <td>
                       <span className={`status-badge ${e.usuario.activo ? 'active' : 'inactive'}`}>
-                        <span>{e.usuario.activo ? '✅' : '❌'}</span>
+                        <Icon name={e.usuario.activo ? "check-circle-fill" : "x-circle-fill"} size="sm" />
                         {e.usuario.activo ? "ACTIVO" : "INACTIVO"}
                       </span>
                     </td>
@@ -197,14 +198,14 @@ export default function GestionEstudiantes() {
                           onClick={() => handleOpenEditModal(e)}
                           className="btn-action btn-edit"
                         >
-                          <span>✏️</span>
+                          <Icon name="pencil" size="sm" />
                           Editar
                         </button>
                         <button
                           onClick={() => handleToggleActive(e.usuario.id, e.usuario.activo)}
                           className={`btn-action btn-toggle ${!e.usuario.activo ? 'activate' : ''}`}
                         >
-                          <span>{e.usuario.activo ? '🔒' : '🔓'}</span>
+                          <Icon name={e.usuario.activo ? "lock" : "unlock"} size="sm" />
                           {e.usuario.activo ? "Desactivar" : "Activar"}
                         </button>
                       </div>

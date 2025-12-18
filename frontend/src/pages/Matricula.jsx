@@ -3,7 +3,8 @@ import { crearMatricula } from "../api/matriculas";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
-// 🔹 Importar los pasos
+import Icon from "../components/Icon";
+// Importar los pasos
 import PasoDatosPersonales from "../components/PasoDatosPersonales";
 import PasoDatosAcademicos from "../components/PasoDatosAcademicos";
 import PasoPago from "../components/PasoPago";
@@ -13,29 +14,29 @@ export default function Matricula() {
   const { user, cerrarSesion } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // 🔹 Control de pasos
+  // Control de pasos
   const [step, setStep] = useState(1);
 
-  // 🔹 Datos acumulados de todos los pasos
+  // Datos acumulados de todos los pasos
   const [formData, setFormData] = useState({});
 
-  // 🔹 Mensaje de estado (éxito / error)
+  // Mensaje de estado (éxito / error)
   const [mensaje, setMensaje] = useState("");
 
-  // 🔹 Verificar autenticación
+  // Verificar autenticación
   useEffect(() => {
     if (!user) navigate("/login");
   }, [user, navigate]);
 
-  // 🔹 Envío final de matrícula
+  // Envío final de matrícula
 const handleSubmit = async () => {
   try {
     const formDataToSend = new FormData();
 
-    // 🔹 ID del usuario autenticado
+    // ID del usuario autenticado
     formDataToSend.append("estudianteId", user.id);
 
-    // 🔹 Datos personales
+    // Datos personales
     formDataToSend.append("nombre", formData.nombre || "");
     formDataToSend.append("apellidoPaterno", formData.apellidoPaterno || "");
     formDataToSend.append("apellidoMaterno", formData.apellidoMaterno || "");
@@ -44,7 +45,7 @@ const handleSubmit = async () => {
     formDataToSend.append("nombreApoderado", formData.nombreApoderado || "");
     formDataToSend.append("telefonoApoderado", formData.telefonoApoderado || "");
 
-    // 🔹 Datos académicos
+    // Datos académicos
     formDataToSend.append("grupoId", formData.grupoId);
     formDataToSend.append("modalidadId", formData.modalidadId);
     formDataToSend.append("carreraPrincipalId", formData.carreraPrincipalId);
@@ -52,27 +53,27 @@ const handleSubmit = async () => {
       formDataToSend.append("carreraSecundariaId", formData.carreraSecundariaId);
     formDataToSend.append("tipoPago", formData.tipoPago);
 
-    // 🔹 Comprobante (archivo)
+    // Comprobante (archivo)
     if (formData.comprobante) {
       formDataToSend.append("comprobante", formData.comprobante);
     }
 
-    console.log("📦 Enviando matrícula:", Object.fromEntries(formDataToSend));
+    console.log("Enviando matrícula:", Object.fromEntries(formDataToSend));
 
     await crearMatricula(formDataToSend);
 
-    setMensaje("✅ Matrícula enviada correctamente");
+    setMensaje("Matrícula enviada correctamente");
     setStep(5);
   } catch (error) {
-    console.error("❌ Error al enviar matrícula:", error);
-    setMensaje("❌ Error al enviar la matrícula");
+    console.error("Error al enviar matrícula:", error);
+    setMensaje("Error al enviar la matrícula");
   }
 };
 
 
   return (
     <div className="matricula-container">
-      {/* 🔹 Paso 1: Datos personales */}
+      {/* Paso 1: Datos personales */}
       {step === 1 && (
         <PasoDatosPersonales
           formData={formData}
@@ -81,7 +82,7 @@ const handleSubmit = async () => {
         />
       )}
 
-      {/* 🔹 Paso 2: Datos académicos */}
+      {/* Paso 2: Datos académicos */}
       {step === 2 && (
         <PasoDatosAcademicos
           formData={formData}
@@ -91,7 +92,7 @@ const handleSubmit = async () => {
         />
       )}
 
-      {/* 🔹 Paso 3: Pago y comprobante */}
+      {/* Paso 3: Pago y comprobante */}
       {step === 3 && (
         <PasoPago
           formData={formData}
@@ -101,7 +102,7 @@ const handleSubmit = async () => {
         />
       )}
 
-      {/* 🔹 Paso 4: Confirmación de datos */}
+      {/* Paso 4: Confirmación de datos */}
       {step === 4 && (
         <PasoConfirmacion
           formData={formData}
@@ -110,10 +111,10 @@ const handleSubmit = async () => {
         />
       )}
 
-      {/* 🔹 Paso 5: Matrícula enviada */}
+      {/* Paso 5: Matrícula enviada */}
       {step === 5 && (
         <div className="text-center py-5">
-          <h2 className="mb-3">🎉 Matrícula enviada</h2>
+          <h2 className="mb-3"><Icon name="emoji-smile" size="lg" /> Matrícula enviada</h2>
           <p className="mb-4">
             Tu matrícula fue registrada correctamente. <br />
             Una vez sea aprobada, se te notificará por WhatsApp o podrás volver
@@ -128,14 +129,14 @@ const handleSubmit = async () => {
         </div>
       )}
 
-      {/* 🔹 Mensaje de estado */}
+      {/* Mensaje de estado */}
       {mensaje && (
-        <div className={`alert ${mensaje.startsWith("✅") ? "alert-success" : "alert-danger"} text-center mt-3`}>
+        <div className={`alert ${mensaje.includes("correctamente") ? "alert-success" : "alert-danger"} text-center mt-3`}>
           {mensaje}
         </div>
       )}
 
-      {/* 🔹 Botón cerrar sesión */}
+      {/* Botón cerrar sesión */}
       <div className="text-center mt-4">
         <button
           onClick={cerrarSesion}

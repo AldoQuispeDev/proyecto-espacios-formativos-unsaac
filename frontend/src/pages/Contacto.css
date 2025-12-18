@@ -137,7 +137,7 @@
 }
 
 .metodo-icon {
-  font-size: 4rem;
+  /* Using global icon utility: icon-3xl */
   margin-bottom: 1rem;
 }
 
@@ -246,7 +246,7 @@
 }
 
 .red-icon {
-  font-size: 4rem;
+  /* Using global icon utility: icon-3xl */
   margin-bottom: 1rem;
 }
 
@@ -299,7 +299,7 @@
 }
 
 .info-icon {
-  font-size: 3rem;
+  /* Using global icon utility: icon-2xl */
   margin-bottom: 1rem;
 }
 

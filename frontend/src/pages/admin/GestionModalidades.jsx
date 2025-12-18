@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getModalidadesAdmin, createModalidad, updateModalidad, deleteModalidad } from '../../api/catalogos';
+import Icon from '../../components/Icon';
 import './GestionModalidades.css';
 
 export default function GestionModalidades() {
@@ -100,11 +101,11 @@ export default function GestionModalidades() {
             {/* HEADER */}
             <div className="modalidades-header">
                 <h3 className="modalidades-title">
-                    <span className="title-icon">🎓</span>
+                    <Icon name="mortarboard" className="title-icon" />
                     Gestión de Modalidades
                 </h3>
                 <div className="modalidades-count">
-                    <span>📊</span>
+                    <Icon name="bar-chart" />
                     Total: {modalidades.length}
                 </div>
             </div>
@@ -112,13 +113,13 @@ export default function GestionModalidades() {
             {/* FORMULARIO */}
             <div className="form-section">
                 <h4 className="form-title">
-                    <span className="form-icon">{editingId ? '✏️' : '➕'}</span>
+                    <Icon name={editingId ? "pencil" : "plus-circle"} className="form-icon" />
                     {editingId ? 'Editar Modalidad' : 'Nueva Modalidad'}
                 </h4>
                 <form onSubmit={handleCreateUpdate}>
                     <div className="form-group">
                         <div className="form-input-wrapper">
-                            <span className="input-icon">🏷️</span>
+                            <Icon name="tag" className="input-icon" />
                             <input
                                 type="text"
                                 value={nombre}
@@ -142,14 +143,14 @@ export default function GestionModalidades() {
                                     </>
                                 ) : (
                                     <>
-                                        <span>{editingId ? '💾' : '✨'}</span>
+                                        <Icon name={editingId ? "save" : "stars"} size="sm" />
                                         {editingId ? 'Guardar Cambios' : 'Crear Modalidad'}
                                     </>
                                 )}
                             </button>
                             {editingId && (
                                 <button type="button" onClick={cancelEdit} className="btn-cancel" disabled={loading}>
-                                    <span>❌</span>
+                                    <Icon name="x-circle" size="sm" />
                                     Cancelar
                                 </button>
                             )}
@@ -161,7 +162,7 @@ export default function GestionModalidades() {
             {/* ERROR MESSAGE */}
             {error && (
                 <div className="error-message">
-                    <span className="error-icon">⚠️</span>
+                    <Icon name="exclamation-triangle" className="error-icon" />
                     {error}
                 </div>
             )}
@@ -170,11 +171,11 @@ export default function GestionModalidades() {
             <div className="table-section">
                 <div className="table-header">
                     <h4 className="table-header-title">
-                        <span>📋</span>
+                        <Icon name="list-ul" />
                         Lista de Modalidades
                     </h4>
                     <div className="table-search">
-                        <span className="search-icon-table">🔍</span>
+                        <Icon name="search" className="search-icon-table" />
                         <input
                             type="text"
                             value={searchTerm}
@@ -192,7 +193,7 @@ export default function GestionModalidades() {
                     </div>
                 ) : filteredModalidades.length === 0 ? (
                     <div className="empty-state">
-                        <div className="empty-icon">📭</div>
+                        <Icon name="inbox" size="xl" className="empty-icon" />
                         <h3 className="empty-title">
                             {searchTerm ? 'No se encontraron resultados' : 'No hay modalidades registradas'}
                         </h3>
@@ -217,7 +218,7 @@ export default function GestionModalidades() {
                                     <td className="table-name">{m.nombre}</td>
                                     <td>
                                         <span className="table-badge">
-                                            <span>👥</span>
+                                            <Icon name="people" size="sm" />
                                             {m.grupos?.length || 0}
                                         </span>
                                     </td>
@@ -228,7 +229,7 @@ export default function GestionModalidades() {
                                                 className="btn-action btn-edit"
                                                 disabled={loading}
                                             >
-                                                <span>✏️</span>
+                                                <Icon name="pencil" size="sm" />
                                                 Editar
                                             </button>
                                             <button 
@@ -237,7 +238,7 @@ export default function GestionModalidades() {
                                                 className="btn-action btn-delete"
                                                 title={m.grupos?.length > 0 ? 'No se puede eliminar: tiene grupos asociados' : 'Eliminar modalidad'}
                                             >
-                                                <span>🗑️</span>
+                                                <Icon name="trash" size="sm" />
                                                 Eliminar
                                             </button>
                                         </div>

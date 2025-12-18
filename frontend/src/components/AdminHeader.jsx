@@ -3,6 +3,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import Icon from "./Icon";
 import "./AdminHeader.css";
 
 export default function AdminHeader() {
@@ -16,12 +17,12 @@ export default function AdminHeader() {
 
   // Menú de navegación
   const navLinks = [
-    { name: 'Dashboard', path: '/admin', icon: '🏠' },
-    { name: 'Validar Matrículas', path: '/admin/validarMatricula', icon: '📝' },
-    { name: 'Gestión de Docentes', path: '/admin/docentes', icon: '👨‍🏫' },
-    { name: 'Gestión de Estudiantes', path: '/admin/estudiantes', icon: '🎓' },
-    { name: 'Gestión de Horarios', path: '/admin/horarios', icon: '📅' },
-    { name: 'Catálogos Académicos', path: '/admin/catalogos', icon: '📚' },
+    { name: 'Dashboard', path: '/admin', icon: 'house' },
+    { name: 'Validar Matrículas', path: '/admin/validarMatricula', icon: 'file-text' },
+    { name: 'Gestión de Docentes', path: '/admin/docentes', icon: 'person-video3' },
+    { name: 'Gestión de Estudiantes', path: '/admin/estudiantes', icon: 'mortarboard' },
+    { name: 'Gestión de Horarios', path: '/admin/horarios', icon: 'calendar3' },
+    { name: 'Catálogos Académicos', path: '/admin/catalogos', icon: 'book' },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -87,7 +88,9 @@ export default function AdminHeader() {
       <div className="admin-header-content">
         {/* LOGO Y TÍTULO */}
         <div className="header-brand" onClick={() => navigate("/admin")}>
-          <div className="brand-logo">🎓</div>
+          <div className="brand-logo">
+            <Icon name="mortarboard" size="xl" />
+          </div>
           <div className="brand-info">
             <h1 className="brand-title">Academia Pre UNSAAC</h1>
             <p className="brand-subtitle">Panel de Admin</p>
@@ -103,7 +106,9 @@ export default function AdminHeader() {
               className={`nav-link ${isActive(link.path) ? 'active' : ''}`}
               title={link.name}
             >
-              <span className="nav-icon">{link.icon}</span>
+              <span className="nav-icon">
+                <Icon name={link.icon} size="md" />
+              </span>
               <span className="nav-text">{link.name}</span>
             </button>
           ))}
@@ -115,7 +120,9 @@ export default function AdminHeader() {
             className="btn-nav-menu"
             onClick={() => setShowNavMenu(!showNavMenu)}
           >
-            <span className="hamburger-icon">☰</span>
+            <span className="hamburger-icon">
+              <Icon name="list" size="lg" />
+            </span>
           </button>
 
           {showNavMenu && (
@@ -133,7 +140,9 @@ export default function AdminHeader() {
                     }}
                     className={`nav-dropdown-item ${isActive(link.path) ? 'active' : ''}`}
                   >
-                    <span className="nav-dropdown-icon">{link.icon}</span>
+                    <span className="nav-dropdown-icon">
+                      <Icon name={link.icon} size="md" />
+                    </span>
                     {link.name}
                   </button>
                 ))}
@@ -150,7 +159,9 @@ export default function AdminHeader() {
               className="btn-notifications"
               onClick={() => setShowNotifications(!showNotifications)}
             >
-              <span className="notification-icon">🔔</span>
+              <span className="notification-icon">
+                <Icon name="bell" size="md" />
+              </span>
               {unreadCount > 0 && (
                 <span className="notification-badge">{unreadCount}</span>
               )}
@@ -186,7 +197,9 @@ export default function AdminHeader() {
               onClick={() => setShowUserMenu(!showUserMenu)}
             >
               <div className="user-avatar">
-                <span className="avatar-icon">👨‍💼</span>
+                <span className="avatar-icon">
+                  <Icon name="person-badge" size="lg" />
+                </span>
               </div>
               <div className="user-info">
                 <span className="user-name">
@@ -194,13 +207,17 @@ export default function AdminHeader() {
                 </span>
                 <span className="user-role">Administrador</span>
               </div>
-              <span className="dropdown-arrow">▼</span>
+              <span className="dropdown-arrow">
+                <Icon name="chevron-down" size="sm" />
+              </span>
             </button>
 
             {showUserMenu && (
               <div className="user-dropdown">
                 <div className="user-dropdown-header">
-                  <div className="user-avatar-large">👨‍💼</div>
+                  <div className="user-avatar-large">
+                    <Icon name="person-badge" size="xl" />
+                  </div>
                   <div className="user-details">
                     <p className="user-fullname">
                       {usuario?.nombre} {usuario?.apellidoPaterno}
@@ -210,20 +227,28 @@ export default function AdminHeader() {
                 </div>
                 <div className="user-dropdown-menu">
                   <button className="menu-item" onClick={() => navigate("/admin")}>
-                    <span className="menu-icon">🏠</span>
+                    <span className="menu-icon">
+                      <Icon name="house" size="md" />
+                    </span>
                     Dashboard
                   </button>
                   <button className="menu-item" onClick={() => navigate("/admin/perfil")}>
-                    <span className="menu-icon">👤</span>
+                    <span className="menu-icon">
+                      <Icon name="person" size="md" />
+                    </span>
                     Mi Perfil
                   </button>
                   <button className="menu-item" onClick={() => navigate("/admin/configuracion")}>
-                    <span className="menu-icon">⚙️</span>
+                    <span className="menu-icon">
+                      <Icon name="gear" size="md" />
+                    </span>
                     Configuración
                   </button>
                   <div className="menu-divider"></div>
                   <button className="menu-item logout" onClick={handleLogout}>
-                    <span className="menu-icon">🚪</span>
+                    <span className="menu-icon">
+                      <Icon name="box-arrow-right" size="md" />
+                    </span>
                     Cerrar Sesión
                   </button>
                 </div>

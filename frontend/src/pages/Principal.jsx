@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Icon from "../components/Icon";
 import "./Principal.css";
 import ModalidadSelectionModal from "../components/ModalidadSelectionModal";
 import ConsultarEstadoModal from "../components/ConsultarEstadoModal";
+import MatriculaRapidaModal from "../components/MatriculaRapidaModal";
 
 export default function Principal() {
   const navigate = useNavigate();
@@ -10,6 +12,8 @@ export default function Principal() {
   const [isModalidadModalOpen, setIsModalidadModalOpen] = useState(false);
   const [isConsultarEstadoOpen, setIsConsultarEstadoOpen] = useState(false);
   const [isAulaDropdownOpen, setIsAulaDropdownOpen] = useState(false);
+  const [matriculaPendiente, setMatriculaPendiente] = useState(null);
+  const [isMatriculaRapidaOpen, setIsMatriculaRapidaOpen] = useState(false);
 
   // Importación dinámica de imágenes para evitar errores de carga
   const [images, setImages] = useState([]);
@@ -84,19 +88,25 @@ export default function Principal() {
             className="btn-aula"
             onClick={() => setIsAulaDropdownOpen(!isAulaDropdownOpen)}
           >
-            🎓 Aula Virtual
+            <Icon name="mortarboard" size="md" /> Aula Virtual
           </button>
           <div className={`dropdown-content dropdown-aula-content ${isAulaDropdownOpen ? 'show' : ''}`}>
             <button onClick={() => navigate("/login", { state: { selectedRole: "ESTUDIANTE" } })}>
-              <span className="role-icon-small">👨‍🎓</span>
+              <span className="role-icon-small">
+                <Icon name="mortarboard" size="sm" />
+              </span>
               Estudiante
             </button>
             <button onClick={() => navigate("/login", { state: { selectedRole: "DOCENTE" } })}>
-              <span className="role-icon-small">👨‍🏫</span>
+              <span className="role-icon-small">
+                <Icon name="person-video3" size="sm" />
+              </span>
               Docente
             </button>
             <button onClick={() => navigate("/login", { state: { selectedRole: "ADMIN" } })}>
-              <span className="role-icon-small">👨‍💼</span>
+              <span className="role-icon-small">
+                <Icon name="person-badge" size="sm" />
+              </span>
               Administrador
             </button>
           </div>
@@ -111,7 +121,23 @@ export default function Principal() {
       <ConsultarEstadoModal
         isOpen={isConsultarEstadoOpen}
         onClose={() => setIsConsultarEstadoOpen(false)}
+        onContinueMatricula={(matricula) => {
+          setMatriculaPendiente(matricula);
+          setIsMatriculaRapidaOpen(true);
+        }}
       />
+
+      {matriculaPendiente && (
+        <MatriculaRapidaModal
+          isOpen={isMatriculaRapidaOpen}
+          onClose={() => {
+            setIsMatriculaRapidaOpen(false);
+            setMatriculaPendiente(null);
+          }}
+          modalidad={matriculaPendiente.modalidad}
+          matriculaPendiente={matriculaPendiente}
+        />
+      )}
 
       <section
         className="hero"
@@ -132,7 +158,7 @@ export default function Principal() {
               Matricúlate Aquí
             </button>
             <button className="btn-hero btn-secondary" onClick={() => setIsConsultarEstadoOpen(true)}>
-              🔍 Consultar Estado de Matrícula
+              <Icon name="search" size="md" /> Consultar Estado de Matrícula
             </button>
           </div>
         </div>
@@ -153,7 +179,9 @@ export default function Principal() {
             <div className="row g-4">
               <div className="col-12 col-lg-6">
                 <div className="card-mision-vision h-100">
-                  <div className="card-icon">🎯</div>
+                  <div className="card-icon">
+                    <Icon name="bullseye" size="xl" title="Misión" />
+                  </div>
                   <h3>Misión</h3>
                   <p>
                     Brindar educación preuniversitaria de calidad, formando estudiantes
@@ -167,7 +195,9 @@ export default function Principal() {
 
               <div className="col-12 col-lg-6">
                 <div className="card-mision-vision h-100">
-                  <div className="card-icon">🌟</div>
+                  <div className="card-icon">
+                    <Icon name="star-fill" size="xl" title="Visión" />
+                  </div>
                   <h3>Visión</h3>
                   <p>
                     Ser la academia preuniversitaria líder en la región Cusco,
@@ -188,28 +218,36 @@ export default function Principal() {
             <div className="row g-4">
               <div className="col-12 col-md-6 col-lg-3">
                 <div className="logro-card h-100">
-                  <div className="logro-icono">🏆</div>
+                  <div className="logro-icono">
+                    <Icon name="trophy-fill" size="xl" title="Ingresantes" />
+                  </div>
                   <h3>95% de Ingresantes</h3>
                   <p>Tasa de ingreso a la UNSAAC en los últimos 5 años</p>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-3">
                 <div className="logro-card h-100">
-                  <div className="logro-icono">👨‍🎓</div>
+                  <div className="logro-icono">
+                    <Icon name="mortarboard" size="xl" title="Estudiantes" />
+                  </div>
                   <h3>+5000 Estudiantes</h3>
                   <p>Preparados exitosamente desde nuestra fundación</p>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-3">
                 <div className="logro-card h-100">
-                  <div className="logro-icono">📚</div>
+                  <div className="logro-icono">
+                    <Icon name="book" size="xl" title="Experiencia" />
+                  </div>
                   <h3>15 Años de Experiencia</h3>
                   <p>Formando a los futuros profesionales del Cusco</p>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-3">
                 <div className="logro-card h-100">
-                  <div className="logro-icono">⭐</div>
+                  <div className="logro-icono">
+                    <Icon name="star-fill" size="xl" title="Docentes" />
+                  </div>
                   <h3>Docentes Calificados</h3>
                   <p>Equipo de profesionales especializados por área</p>
                 </div>
@@ -225,28 +263,36 @@ export default function Principal() {
             <div className="row g-4">
               <div className="col-12 col-sm-6 col-lg-3">
                 <div className="valor-item h-100 d-flex flex-column align-items-center">
-                  <span className="valor-icono">💪</span>
+                  <span className="valor-icono">
+                    <Icon name="award" size="xl" title="Excelencia" />
+                  </span>
                   <h4>Excelencia</h4>
                   <p className="text-center mb-0">Compromiso con la calidad educativa</p>
                 </div>
               </div>
               <div className="col-12 col-sm-6 col-lg-3">
                 <div className="valor-item h-100 d-flex flex-column align-items-center">
-                  <span className="valor-icono">🤝</span>
+                  <span className="valor-icono">
+                    <Icon name="hand-thumbs-up" size="xl" title="Integridad" />
+                  </span>
                   <h4>Integridad</h4>
                   <p className="text-center mb-0">Honestidad y transparencia en todo momento</p>
                 </div>
               </div>
               <div className="col-12 col-sm-6 col-lg-3">
                 <div className="valor-item h-100 d-flex flex-column align-items-center">
-                  <span className="valor-icono">🎓</span>
+                  <span className="valor-icono">
+                    <Icon name="mortarboard" size="xl" title="Responsabilidad" />
+                  </span>
                   <h4>Responsabilidad</h4>
                   <p className="text-center mb-0">Compromiso con el aprendizaje de nuestros estudiantes</p>
                 </div>
               </div>
               <div className="col-12 col-sm-6 col-lg-3">
                 <div className="valor-item h-100 d-flex flex-column align-items-center">
-                  <span className="valor-icono">🌱</span>
+                  <span className="valor-icono">
+                    <Icon name="lightbulb" size="xl" title="Innovación" />
+                  </span>
                   <h4>Innovación</h4>
                   <p className="text-center mb-0">Adaptación constante a nuevas metodologías</p>
                 </div>

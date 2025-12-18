@@ -1,3 +1,4 @@
+import Icon from "./Icon";
 import "./StatCard.css";
 
 export default function StatCard({ icon, title, value, subtitle, color = "blue", trend }) {
@@ -13,7 +14,7 @@ export default function StatCard({ icon, title, value, subtitle, color = "blue",
   return (
     <div className={`stat-card ${colorClasses[color]}`}>
       <div className="stat-card-icon">
-        <span>{icon}</span>
+        <Icon name={icon} size="xl" />
       </div>
       <div className="stat-card-content">
         <h3 className="stat-card-title">{title}</h3>
@@ -21,7 +22,7 @@ export default function StatCard({ icon, title, value, subtitle, color = "blue",
         {subtitle && <p className="stat-card-subtitle">{subtitle}</p>}
         {trend && (
           <div className={`stat-card-trend ${trend.type}`}>
-            <span>{trend.type === "up" ? "↑" : "↓"}</span>
+            <Icon name={trend.type === "up" ? "arrow-up" : "arrow-down"} size="sm" />
             <span>{trend.value}</span>
           </div>
         )}

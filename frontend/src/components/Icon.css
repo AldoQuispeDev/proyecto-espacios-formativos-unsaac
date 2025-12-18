@@ -1,0 +1,27 @@
+/* Icon.css - Component-specific icon styles */
+/* Note: Global icon utilities are defined in index.css */
+
+/* Icon component base styles */
+.icon-component {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Ensure proper alignment in flex containers */
+.icon-component i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Accessibility improvements */
+i[aria-hidden="true"] {
+  pointer-events: none;
+}
+
+/* Icon with title/tooltip */
+i[title] {
+  cursor: help;
+}

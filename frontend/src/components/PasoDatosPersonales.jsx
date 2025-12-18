@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Icon from "./Icon";
 import "./PasoDatosPersonales.css";
-// ⚠️ IMPORTAR CLIENTES API NECESARIOS
+// IMPORTAR CLIENTES API NECESARIOS
 import { getDatosPersonales, updateDatosPersonales } from "../api/usuario"; 
 
 export default function PasoDatosPersonales({ formData, setFormData }) {
@@ -39,7 +40,7 @@ export default function PasoDatosPersonales({ formData, setFormData }) {
 
       } catch (error) {
         console.error("Error al cargar datos de Usuario:", error);
-        setMensaje("❌ Error al cargar tus datos iniciales.");
+        setMensaje("Error al cargar tus datos iniciales.");
       } finally {
         setLoading(false);
       }
@@ -108,7 +109,7 @@ export default function PasoDatosPersonales({ formData, setFormData }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formValido) {
-        setMensaje("❌ Por favor, revisa y completa todos los campos obligatorios.");
+        setMensaje("Por favor, revisa y completa todos los campos obligatorios.");
         return;
     }
     
@@ -130,14 +131,14 @@ export default function PasoDatosPersonales({ formData, setFormData }) {
         await updateDatosPersonales(datosUsuarioAActualizar);
         
         // 3. Si la actualización fue exitosa, redirigir al aula virtual
-        setMensaje("✅ Datos actualizados. Redirigiendo a tu aula virtual...");
+        setMensaje("Datos actualizados. Redirigiendo a tu aula virtual...");
         setTimeout(() => {
             navigate("/estudiante/aula");
         }, 1000);
 
     } catch (error) {
         console.error("Error al validar y actualizar tus datos:", error);
-        setMensaje("❌ Error al actualizar los datos personales. Verifica tu DNI o inténtalo más tarde.");
+        setMensaje("Error al actualizar los datos personales. Verifica tu DNI o inténtalo más tarde.");
     } finally {
         setLoading(false);
     }
@@ -292,7 +293,7 @@ export default function PasoDatosPersonales({ formData, setFormData }) {
 
         {/* Mensaje de estado */}
         {mensaje && (
-            <div className={`message ${mensaje.startsWith("✅") ? 'success' : 'error'}`}>
+            <div className={`message ${mensaje.includes("actualizado") || mensaje.includes("Redirigiendo") ? 'success' : 'error'}`}>
                 {mensaje}
             </div>
         )}
@@ -311,7 +312,7 @@ export default function PasoDatosPersonales({ formData, setFormData }) {
               </>
             ) : (
               <>
-                <span className="icon">🎓</span>
+                <Icon name="mortarboard" size="sm" />
                 Ver Mi Aula Virtual
               </>
             )}

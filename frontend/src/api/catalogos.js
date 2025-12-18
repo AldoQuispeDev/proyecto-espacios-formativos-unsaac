@@ -3,7 +3,7 @@
 import api from "./client";
 
 // ----------------------------------------------------------------------
-// 🔹 FUNCIONES PÚBLICAS (usadas en el flujo de Matrícula - Frontend público)
+// FUNCIONES PÚBLICAS (usadas en el flujo de Matrícula - Frontend público)
 // ----------------------------------------------------------------------
 
 // Obtener todas las modalidades (puede ser usado por el frontend público/catálogos)
@@ -26,10 +26,10 @@ export const getAsignaturas = () => api.get("/asignaturas");
 
 
 // ----------------------------------------------------------------------
-// 🔹 FUNCIONES DE ADMINISTRACIÓN (CRUD - Usadas en el Panel Admin)
+// FUNCIONES DE ADMINISTRACIÓN (CRUD - Usadas en el Panel Admin)
 // ----------------------------------------------------------------------
 
-// 🛑 CRUD Modalidades (Las funciones que te faltaba exportar)
+// CRUD Modalidades (Las funciones que te faltaba exportar)
 
 export const createModalidad = (nombre) => api.post("/admin/modalidades", { nombre });
 
@@ -41,6 +41,6 @@ export const updateModalidad = (id, nombre) => api.put(`/admin/modalidades/${id}
 export const deleteModalidad = (id) => api.delete(`/admin/modalidades/${id}`);
 
 // ----------------------------------------------------------------------
-// 🛑 Faltan las funciones CRUD para Grupos, Carreras, Asignaturas, Aulas.
+// NOTE: Faltan las funciones CRUD para Grupos, Carreras, Asignaturas, Aulas.
 // Las implementaremos en las siguientes iteraciones del Sprint 2.
 // ----------------------------------------------------------------------

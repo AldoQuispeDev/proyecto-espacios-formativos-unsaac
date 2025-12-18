@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./PasoPago.css";
 
 export default function PasoPago({ formData, setFormData, onNext, onBack }) {
+  const navigate = useNavigate();
   const [archivo, setArchivo] = useState(formData.comprobante || null);
   const [aviso, setAviso] = useState("");
   const [error, setError] = useState("");
+  const [mostrarModalPago, setMostrarModalPago] = useState(false);
 
   const validar = () => {
     let msg = "";
@@ -50,6 +53,15 @@ export default function PasoPago({ formData, setFormData, onNext, onBack }) {
     if (validar()) onNext();
   };
 
+  const handleIrAPagar = () => {
+    setMostrarModalPago(true);
+  };
+
+  const handleCerrarModal = () => {
+    setMostrarModalPago(false);
+    navigate("/principal");
+  };
+
   const formValido = formData.tipoPago && archivo && !error;
 
   return (
@@ -78,6 +90,32 @@ export default function PasoPago({ formData, setFormData, onNext, onBack }) {
 
         {/* Aviso según tipo de pago */}
         {aviso && <p className="pago-aviso">{aviso}</p>}
+
+        {/* Información de pago */}
+        {formData.tipoPago && (
+          <div className="info-pago-banco">
+            <h3>📋 Información para el Pago</h3>
+            <p><strong>Banco:</strong> Banco de la Nación</p>
+            <p><strong>Cuenta:</strong> 1234-5678-9012-3456</p>
+            <p><strong>Titular:</strong> Academia Preuniversitaria UNSAAC</p>
+            <p className="nota-importante">
+              ⚠️ Después de realizar el pago, regresa aquí con tu voucher para completar tu matrícula.
+            </p>
+          </div>
+        )}
+
+        {/* Botón Ir a Pagar */}
+        {formData.tipoPago && !archivo && (
+          <div className="form-group">
+            <button 
+              type="button" 
+              className="btn-ir-pagar"
+              onClick={handleIrAPagar}
+            >
+              🏦 Ir a Pagar
+            </button>
+          </div>
+        )}
 
         {/* Subir comprobante */}
         <div className="form-group">
@@ -109,6 +147,38 @@ export default function PasoPago({ formData, setFormData, onNext, onBack }) {
           </button>
         </div>
       </form>
+
+      {/* Modal de confirmación de pago */}
+      {mostrarModalPago && (
+        <div className="modal-overlay" onClick={handleCerrarModal}>
+          <div className="modal-pago" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>🏦 Instrucciones de Pago</h3>
+            </div>
+            <div className="modal-body">
+              <p className="modal-message">
+                Por favor, realiza el pago en el banco con los datos proporcionados.
+              </p>
+              <p className="modal-instruction">
+                <strong>Después de obtener tu voucher:</strong>
+              </p>
+              <ol className="modal-steps">
+                <li>Vuelve a ingresar a la página principal</li>
+                <li>Ingresa con tu DNI: <strong>{formData.dni}</strong></li>
+                <li>Sube tu comprobante de pago</li>
+              </ol>
+              <p className="modal-note">
+                ⚠️ Guarda bien tu voucher, lo necesitarás para completar tu matrícula.
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-modal-cerrar" onClick={handleCerrarModal}>
+                Entendido, volver al inicio
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,9 +5,10 @@ import {
   obtenerCarrerasPorGrupo,
 } from "../api/catalogos";
 import { crearMatricula } from "../api/matriculas";
+import Icon from "./Icon";
 import "./MatriculaRapidaModal.css";
 
-export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
+export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matriculaPendiente }) {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -32,15 +33,37 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
   const [step, setStep] = useState(1); // 1: Datos personales, 2: Datos académicos, 3: Confirmación, 4: Estado
   const [comprobantePreview, setComprobantePreview] = useState(null);
   const [matriculaCreada, setMatriculaCreada] = useState(null);
+  const [showPagoModal, setShowPagoModal] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       fetchGrupos();
-      // Reset form cuando se abre
-      setStep(1);
+      
+      // Si hay una matrícula pendiente, precargar datos y ir al paso 3
+      if (matriculaPendiente) {
+        setFormData({
+          nombre: matriculaPendiente.nombre || "",
+          apellidoPaterno: matriculaPendiente.apellidoPaterno || "",
+          apellidoMaterno: matriculaPendiente.apellidoMaterno || "",
+          dni: matriculaPendiente.dni || "",
+          email: matriculaPendiente.email || "",
+          telefono: matriculaPendiente.telefono || "",
+          colegioProcedencia: matriculaPendiente.colegioProcedencia || "",
+          grupoId: matriculaPendiente.grupoId?.toString() || "",
+          carreraPrincipalId: matriculaPendiente.carreraPrincipalId?.toString() || "",
+          carreraSecundariaId: matriculaPendiente.carreraSecundariaId?.toString() || "",
+          tipoPago: matriculaPendiente.tipoPago || "",
+          comprobante: null,
+        });
+        setStep(3); // Ir directo al paso 3 (confirmación y subir comprobante)
+      } else {
+        // Reset form cuando se abre sin matrícula pendiente
+        setStep(1);
+      }
+      
       setError("");
     }
-  }, [isOpen]);
+  }, [isOpen, matriculaPendiente]);
 
   useEffect(() => {
     if (formData.grupoId) {
@@ -228,9 +251,9 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
       setMatriculaCreada(response.data.data);
       setStep(4);
     } catch (err) {
-      console.error("❌ Error al crear matrícula:", err);
-      console.error("❌ Response:", err.response);
-      console.error("❌ Data:", err.response?.data);
+      console.error("Error al crear matrícula:", err);
+      console.error("Response:", err.response);
+      console.error("Data:", err.response?.data);
       
       const errorMsg = err.response?.data?.message 
         || err.response?.data?.error 
@@ -292,7 +315,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
         {/* Error Message */}
         {error && (
           <div className="matricula-error">
-            <span>⚠️ {error}</span>
+            <span><Icon name="exclamation-triangle" size="sm" /> {error}</span>
           </div>
         )}
 
@@ -481,7 +504,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                       onChange={handleChange}
                     />
                     <div className="radio-card-content">
-                      <span className="radio-icon">💵</span>
+                      <span className="radio-icon"><Icon name="cash" size="lg" /></span>
                       <span className="radio-title">Efectivo</span>
                       <span className="radio-description">
                         Acérquese a oficina, pague el monto que eligió y pida la boleta
@@ -498,7 +521,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                       onChange={handleChange}
                     />
                     <div className="radio-card-content">
-                      <span className="radio-icon">🏦</span>
+                      <span className="radio-icon"><Icon name="bank" size="lg" /></span>
                       <span className="radio-title">Transferencia</span>
                       <span className="radio-description">
                         <strong>Banco:</strong> BCP<br />
@@ -517,7 +540,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                       onChange={handleChange}
                     />
                     <div className="radio-card-content">
-                      <span className="radio-icon">📱</span>
+                      <span className="radio-icon"><Icon name="phone" size="lg" /></span>
                       <span className="radio-title">Yape/Plin</span>
                       <span className="radio-description">
                         <strong>Número:</strong> 999 999 999<br />
@@ -538,7 +561,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
             
             <div className="confirmacion-grid">
               <div className="confirmacion-section">
-                <h4>📋 Datos Personales</h4>
+                <h4><Icon name="file-text" size="md" /> Datos Personales</h4>
                 <div className="confirmacion-item">
                   <span className="label">Nombre Completo:</span>
                   <span className="value">
@@ -560,7 +583,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
               </div>
 
               <div className="confirmacion-section">
-                <h4>🎓 Datos Académicos</h4>
+                <h4><Icon name="mortarboard" size="md" /> Datos Académicos</h4>
                 <div className="confirmacion-item">
                   <span className="label">Modalidad:</span>
                   <span className="value">{modalidad.nombre}</span>
@@ -592,9 +615,37 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
               </div>
             </div>
 
+            {/* Botón Ir a Pagar */}
+            <div className="ir-a-pagar-section" style={{ textAlign: 'center', margin: '20px 0' }}>
+              <button
+                type="button"
+                className="btn-ir-a-pagar"
+                onClick={() => setShowPagoModal(true)}
+                style={{
+                  background: '#10b981',
+                  color: 'white',
+                  padding: '12px 30px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => e.target.style.background = '#059669'}
+                onMouseOut={(e) => e.target.style.background = '#10b981'}
+              >
+                <Icon name="credit-card" size="md" />
+                Ir a Pagar
+              </button>
+            </div>
+
             {/* Subir Comprobante */}
             <div className="comprobante-section">
-              <h4>📎 Comprobante de Pago</h4>
+              <h4><Icon name="paperclip" size="md" /> Comprobante de Pago</h4>
               <p className="comprobante-instruction">
                 Sube una foto o captura de tu comprobante de pago (boleta, voucher o captura de Yape/Plin)
               </p>
@@ -610,12 +661,12 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                 <label htmlFor="comprobante" className="comprobante-upload-btn">
                   {formData.comprobante ? (
                     <>
-                      <span className="upload-icon">✓</span>
+                      <span className="upload-icon"><Icon name="check-circle" size="sm" /></span>
                       <span>{formData.comprobante.name}</span>
                     </>
                   ) : (
                     <>
-                      <span className="upload-icon">📤</span>
+                      <span className="upload-icon"><Icon name="upload" size="sm" /></span>
                       <span>Seleccionar archivo</span>
                     </>
                   )}
@@ -636,7 +687,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                       setComprobantePreview(null);
                     }}
                   >
-                    ✕ Quitar archivo
+                    <Icon name="x" size="sm" /> Quitar archivo
                   </button>
                 )}
               </div>
@@ -649,7 +700,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
             {/* Mensajes Informativos */}
             <div className="confirmacion-alerts">
               <div className="alert alert-info">
-                <span className="alert-icon">📱</span>
+                <span className="alert-icon"><Icon name="whatsapp" size="sm" /></span>
                 <div className="alert-content">
                   <strong>Recibirás un mensaje de WhatsApp</strong>
                   <p>Te enviaremos la confirmación de tu matrícula al número {formData.telefono}</p>
@@ -657,7 +708,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
               </div>
 
               <div className="alert alert-warning">
-                <span className="alert-icon">⏳</span>
+                <span className="alert-icon"><Icon name="hourglass-split" size="sm" /></span>
                 <div className="alert-content">
                   <strong>Estado de tu matrícula</strong>
                   <p>El administrador revisará tu solicitud y te notificará si fue aprobada o rechazada</p>
@@ -671,11 +722,11 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
         {step === 4 && matriculaCreada && (
           <div className="matricula-rapida-body">
             <div className="estado-success-container">
-              <div className="success-icon-large">✅</div>
+              <div className="success-icon-large"><Icon name="check-circle-fill" size="xl" /></div>
               <h2 className="success-title">¡Matrícula Registrada Exitosamente!</h2>
               
               <div className="estado-badge-large estado-pendiente">
-                <span className="estado-icon-large">⏳</span>
+                <span className="estado-icon-large"><Icon name="hourglass-split" size="lg" /></span>
                 <div className="estado-info">
                   <span className="estado-label">Estado Actual</span>
                   <span className="estado-value">PENDIENTE</span>
@@ -686,7 +737,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                 <h3>Resumen de tu Matrícula</h3>
                 
                 <div className="resumen-item">
-                  <span className="resumen-icon">👤</span>
+                  <span className="resumen-icon"><Icon name="person" size="md" /></span>
                   <div className="resumen-content">
                     <span className="resumen-label">Nombre Completo</span>
                     <span className="resumen-value">
@@ -696,7 +747,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                 </div>
 
                 <div className="resumen-item">
-                  <span className="resumen-icon">🆔</span>
+                  <span className="resumen-icon"><Icon name="person-vcard" size="md" /></span>
                   <div className="resumen-content">
                     <span className="resumen-label">DNI</span>
                     <span className="resumen-value">{formData.dni}</span>
@@ -704,7 +755,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                 </div>
 
                 <div className="resumen-item">
-                  <span className="resumen-icon">📱</span>
+                  <span className="resumen-icon"><Icon name="telephone" size="md" /></span>
                   <div className="resumen-content">
                     <span className="resumen-label">Teléfono</span>
                     <span className="resumen-value">{formData.telefono}</span>
@@ -712,7 +763,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                 </div>
 
                 <div className="resumen-item">
-                  <span className="resumen-icon">🎓</span>
+                  <span className="resumen-icon"><Icon name="mortarboard" size="md" /></span>
                   <div className="resumen-content">
                     <span className="resumen-label">Modalidad</span>
                     <span className="resumen-value">{modalidad.nombre}</span>
@@ -722,7 +773,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
 
               <div className="estado-alerts">
                 <div className="alert alert-info-estado">
-                  <span className="alert-icon">📱</span>
+                  <span className="alert-icon"><Icon name="whatsapp" size="sm" /></span>
                   <div className="alert-content">
                     <strong>Recibirás un mensaje de WhatsApp</strong>
                     <p>Te enviaremos la confirmación al número {formData.telefono}</p>
@@ -730,7 +781,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                 </div>
 
                 <div className="alert alert-warning-estado">
-                  <span className="alert-icon">⏳</span>
+                  <span className="alert-icon"><Icon name="hourglass-split" size="sm" /></span>
                   <div className="alert-content">
                     <strong>Tu matrícula está en revisión</strong>
                     <p>El administrador revisará tu solicitud y te notificará cuando sea aprobada o rechazada</p>
@@ -738,7 +789,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
                 </div>
 
                 <div className="alert alert-success-estado">
-                  <span className="alert-icon">🔍</span>
+                  <span className="alert-icon"><Icon name="search" size="sm" /></span>
                   <div className="alert-content">
                     <strong>Consulta tu estado en cualquier momento</strong>
                     <p>Ingresa tu DNI en "Consultar Estado" desde la página principal</p>
@@ -766,7 +817,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
               onClick={handleSubmit}
               disabled={loading}
             >
-              {loading ? "Enviando..." : "Confirmar Matrícula ✓"}
+              {loading ? "Enviando..." : <><Icon name="check-circle" size="sm" /> Confirmar Matrícula</>}
             </button>
           ) : step === 4 ? (
             <button className="btn-finalizar-modal" onClick={handleFinalizar}>
@@ -775,6 +826,50 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad }) {
           ) : null}
         </div>
       </div>
+
+      {/* Modal de Pago */}
+      {showPagoModal && (
+        <div className="modal-overlay" style={{ zIndex: 10000 }}>
+          <div className="modal-content" style={{
+            maxWidth: '500px',
+            textAlign: 'center',
+            padding: '40px',
+            borderRadius: '12px'
+          }}>
+            <div style={{ marginBottom: '20px' }}>
+              <Icon name="credit-card" size="3xl" className="text-success" />
+            </div>
+            <h3 style={{ marginBottom: '15px', color: '#1f2937' }}>
+              Realice su Pago
+            </h3>
+            <p style={{ fontSize: '16px', color: '#6b7280', marginBottom: '30px' }}>
+              Por favor, realice su pago y vuelva con el voucher para completar su matrícula.
+            </p>
+            <button
+              onClick={() => {
+                setShowPagoModal(false);
+                onClose();
+                navigate('/');
+              }}
+              style={{
+                background: '#10b981',
+                color: 'white',
+                padding: '12px 30px',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={(e) => e.target.style.background = '#059669'}
+              onMouseOut={(e) => e.target.style.background = '#10b981'}
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

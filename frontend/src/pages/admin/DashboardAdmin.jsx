@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AdminSidebarLayout from "../../components/AdminSidebarLayout";
 import StatCard from "../../components/StatCard";
 import ModuleCard from "../../components/ModuleCard";
+import Icon from "../../components/Icon";
 import { getEstadisticas } from "../../api/dashboard";
 import "./DashboardAdmin.css";
 
@@ -12,7 +13,7 @@ const MODULOS = [
     title: "Validación de Matrículas",
     description: "Revisa, aprueba o rechaza los comprobantes de pago de los nuevos estudiantes.",
     path: "/admin/validarMatricula",
-    icon: "📝",
+    icon: "file-text",
     color: "orange",
   },
   {
@@ -20,7 +21,7 @@ const MODULOS = [
     title: "Gestión de Estudiantes",
     description: "Visualiza, edita y administra los perfiles de todos los alumnos registrados.",
     path: "/admin/estudiantes",
-    icon: "🎓",
+    icon: "mortarboard",
     color: "blue",
   },
   {
@@ -28,7 +29,7 @@ const MODULOS = [
     title: "Gestión de Docentes",
     description: "Crea, edita y desactiva las fichas de los profesores y personal administrativo.",
     path: "/admin/docentes",
-    icon: "👨‍🏫",
+    icon: "person-video3",
     color: "green",
   },
   {
@@ -36,7 +37,7 @@ const MODULOS = [
     title: "Gestión de Horarios",
     description: "Administra los horarios de clases, asigna docentes, aulas y gestiona el calendario académico.",
     path: "/admin/horarios",
-    icon: "📅",
+    icon: "calendar3",
     color: "purple",
   },
   {
@@ -44,7 +45,7 @@ const MODULOS = [
     title: "Catálogos Académicos",
     description: "Administra las Modalidades, Grupos, Carreras y Asignaturas.",
     path: "/admin/catalogos",
-    icon: "📚",
+    icon: "book",
     color: "orange",
   },
 ];
@@ -78,7 +79,7 @@ export default function DashboardAdmin() {
       {/* BIENVENIDA - CON BOOTSTRAP */}
       <div className="dashboard-welcome mb-4">
         <h2 className="dashboard-welcome-title mb-3">
-          ¡Bienvenido al Panel de Administración! 👋
+          ¡Bienvenido al Panel de Administración! <Icon name="hand-wave" size="lg" />
         </h2>
         <p className="dashboard-welcome-text text-muted">
           Aquí encontrarás un resumen completo de las métricas clave del sistema y accesos rápidos a todas las funciones de gestión.
@@ -93,7 +94,7 @@ export default function DashboardAdmin() {
         </div>
       ) : error ? (
         <div className="dashboard-error">
-          <p>⚠️ {error}</p>
+          <p><Icon name="exclamation-triangle" size="md" /> {error}</p>
           <button onClick={fetchEstadisticas} className="btn-retry">
             Reintentar
           </button>
@@ -102,11 +103,11 @@ export default function DashboardAdmin() {
         <>
           {/* SECCIÓN: USUARIOS - CON BOOTSTRAP GRID */}
           <section className="dashboard-section mb-5">
-            <h3 className="dashboard-section-title mb-4">👥 Usuarios del Sistema</h3>
+            <h3 className="dashboard-section-title mb-4"><Icon name="people" size="md" /> Usuarios del Sistema</h3>
             <div className="row g-4">
               <div className="col-12 col-sm-6 col-xl-3">
                 <StatCard
-                  icon="🎓"
+                  icon="mortarboard"
                   title="Estudiantes"
                   value={stats.usuarios.estudiantes}
                   subtitle="Alumnos activos"
@@ -115,7 +116,7 @@ export default function DashboardAdmin() {
               </div>
               <div className="col-12 col-sm-6 col-xl-3">
                 <StatCard
-                  icon="👨‍🏫"
+                  icon="person-video3"
                   title="Docentes"
                   value={stats.usuarios.docentes}
                   subtitle="Profesores activos"
@@ -124,7 +125,7 @@ export default function DashboardAdmin() {
               </div>
               <div className="col-12 col-sm-6 col-xl-3">
                 <StatCard
-                  icon="👨‍💼"
+                  icon="person-badge"
                   title="Administradores"
                   value={stats.usuarios.admins}
                   subtitle="Personal administrativo"
@@ -133,7 +134,7 @@ export default function DashboardAdmin() {
               </div>
               <div className="col-12 col-sm-6 col-xl-3">
                 <StatCard
-                  icon="👤"
+                  icon="person"
                   title="Total Usuarios"
                   value={stats.usuarios.total}
                   subtitle="Usuarios registrados"
@@ -145,11 +146,11 @@ export default function DashboardAdmin() {
 
           {/* SECCIÓN: MATRÍCULAS - CON BOOTSTRAP GRID */}
           <section className="dashboard-section mb-5">
-            <h3 className="dashboard-section-title mb-4">📝 Estado de Matrículas</h3>
+            <h3 className="dashboard-section-title mb-4"><Icon name="file-text" size="md" /> Estado de Matrículas</h3>
             <div className="row g-4">
               <div className="col-12 col-sm-6 col-xl-3">
                 <StatCard
-                  icon="⏳"
+                  icon="hourglass-split"
                   title="Pendientes"
                   value={stats.matriculas.pendientes}
                   subtitle="Esperando validación"
@@ -158,7 +159,7 @@ export default function DashboardAdmin() {
               </div>
               <div className="col-12 col-sm-6 col-xl-3">
                 <StatCard
-                  icon="✅"
+                  icon="check-circle-fill"
                   title="Aprobadas"
                   value={stats.matriculas.aprobadas}
                   subtitle="Matrículas confirmadas"
@@ -167,7 +168,7 @@ export default function DashboardAdmin() {
               </div>
               <div className="col-12 col-sm-6 col-xl-3">
                 <StatCard
-                  icon="❌"
+                  icon="x-circle-fill"
                   title="Rechazadas"
                   value={stats.matriculas.rechazadas}
                   subtitle="Matrículas denegadas"
@@ -176,7 +177,7 @@ export default function DashboardAdmin() {
               </div>
               <div className="col-12 col-sm-6 col-xl-3">
                 <StatCard
-                  icon="📊"
+                  icon="bar-chart"
                   title="Total"
                   value={stats.matriculas.total}
                   subtitle="Todas las matrículas"
@@ -188,11 +189,11 @@ export default function DashboardAdmin() {
 
           {/* SECCIÓN: CATÁLOGOS - CON BOOTSTRAP GRID */}
           <section className="dashboard-section mb-5">
-            <h3 className="dashboard-section-title mb-4">📚 Catálogos Académicos</h3>
+            <h3 className="dashboard-section-title mb-4"><Icon name="book" size="md" /> Catálogos Académicos</h3>
             <div className="row g-3">
               <div className="col-6 col-md-3">
                 <StatCard
-                  icon="🏫"
+                  icon="building"
                   title="Grupos"
                   value={stats.catalogos.grupos}
                   color="purple"
@@ -200,7 +201,7 @@ export default function DashboardAdmin() {
               </div>
               <div className="col-6 col-md-3">
                 <StatCard
-                  icon="🎯"
+                  icon="bullseye"
                   title="Carreras"
                   value={stats.catalogos.carreras}
                   color="blue"
@@ -208,7 +209,7 @@ export default function DashboardAdmin() {
               </div>
               <div className="col-6 col-md-3">
                 <StatCard
-                  icon="📖"
+                  icon="book-half"
                   title="Asignaturas"
                   value={stats.catalogos.asignaturas}
                   color="green"
@@ -216,7 +217,7 @@ export default function DashboardAdmin() {
               </div>
               <div className="col-6 col-md-3">
                 <StatCard
-                  icon="🎓"
+                  icon="mortarboard"
                   title="Modalidades"
                   value={stats.catalogos.modalidades}
                   color="orange"
@@ -228,11 +229,13 @@ export default function DashboardAdmin() {
           {/* SECCIÓN: ACTIVIDAD RECIENTE */}
           {stats.recientes.estudiantes.length > 0 && (
             <section className="dashboard-section">
-              <h3 className="dashboard-section-title">🕒 Últimos Estudiantes Registrados</h3>
+              <h3 className="dashboard-section-title"><Icon name="clock-history" size="md" /> Últimos Estudiantes Registrados</h3>
               <div className="recent-list">
                 {stats.recientes.estudiantes.map((est) => (
                   <div key={est.id} className="recent-item">
-                    <div className="recent-item-icon">🎓</div>
+                    <div className="recent-item-icon">
+                      <Icon name="mortarboard" size="lg" />
+                    </div>
                     <div className="recent-item-content">
                       <p className="recent-item-name">
                         {est.usuario.nombre} {est.usuario.apellidoPaterno} {est.usuario.apellidoMaterno}
@@ -252,7 +255,7 @@ export default function DashboardAdmin() {
 
       {/* MÓDULOS DE GESTIÓN - CON BOOTSTRAP GRID */}
       <section className="dashboard-section mb-5">
-        <h3 className="dashboard-section-title mb-4">🚀 Accesos Rápidos</h3>
+        <h3 className="dashboard-section-title mb-4"><Icon name="rocket-takeoff" size="md" /> Accesos Rápidos</h3>
         <div className="row g-4">
           {MODULOS.map((modulo) => (
             <div key={modulo.id} className="col-12 col-md-6 col-lg-4">

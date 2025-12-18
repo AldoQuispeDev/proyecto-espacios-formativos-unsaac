@@ -3,6 +3,7 @@ import AdminSidebarLayout from "../../components/AdminSidebarLayout";
 import HorarioFormModal from "../../components/HorarioFormModal";
 import AulaFormModal from "../../components/AulaFormModal";
 import { getClases, deleteClase } from "../../api/horarios";
+import Icon from "../../components/Icon";
 import "./GestionHorarios.css";
 
 const DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -123,10 +124,10 @@ export default function GestionHorarios() {
             className="btn-secondary"
             onClick={() => setIsAulaModalOpen(true)}
           >
-            🏫 Gestionar Aulas
+            <Icon name="building" size="sm" className="me-1" /> Gestionar Aulas
           </button>
           <button className="btn-primary" onClick={handleOpenCreateModal}>
-            ➕ Nueva Clase
+            <Icon name="plus-circle" size="sm" className="me-1" /> Nueva Clase
           </button>
         </div>
       </div>
@@ -152,7 +153,7 @@ export default function GestionHorarios() {
               className="btn-clear-filter"
               onClick={() => setFiltros({ ...filtros, dia: "" })}
             >
-              ✕ Limpiar filtro
+              <Icon name="x-lg" size="sm" /> Limpiar filtro
             </button>
           )}
         </div>
@@ -162,20 +163,20 @@ export default function GestionHorarios() {
             className={`view-btn ${vistaActual === "calendario" ? "active" : ""}`}
             onClick={() => setVistaActual("calendario")}
           >
-            📅 Calendario
+            <Icon name="calendar3" size="sm" className="me-1" /> Calendario
           </button>
           <button
             className={`view-btn ${vistaActual === "lista" ? "active" : ""}`}
             onClick={() => setVistaActual("lista")}
           >
-            📋 Lista
+            <Icon name="list-ul" size="sm" className="me-1" /> Lista
           </button>
         </div>
       </div>
 
       {error && (
         <div className="error-banner">
-          <p>⚠️ {error}</p>
+          <p><Icon name="exclamation-triangle" size="sm" className="me-1" /> {error}</p>
           <button onClick={fetchClases}>Reintentar</button>
         </div>
       )}
@@ -218,14 +219,14 @@ export default function GestionHorarios() {
                           </div>
                           <div className="clase-card-body">
                             <p className="clase-docente">
-                              👨‍🏫 {clase.docente.usuario.nombre}{" "}
+                              <Icon name="person-video3" size="sm" className="me-1" /> {clase.docente.usuario.nombre}{" "}
                               {clase.docente.usuario.apellidoPaterno}
                             </p>
                             <p className="clase-aula">
-                              🏫 {clase.aula.nombre}
+                              <Icon name="building" size="sm" className="me-1" /> {clase.aula.nombre}
                             </p>
                             <p className="clase-horario">
-                              🕐 {formatHora(clase.horaInicio)} -{" "}
+                              <Icon name="clock" size="sm" className="me-1" /> {formatHora(clase.horaInicio)} -{" "}
                               {formatHora(clase.horaFin)}
                             </p>
                           </div>
@@ -282,13 +283,13 @@ export default function GestionHorarios() {
                           className="btn-edit"
                           onClick={() => handleOpenEditModal(clase)}
                         >
-                          ✏️
+                          <Icon name="pencil" size="sm" />
                         </button>
                         <button
                           className="btn-delete"
                           onClick={() => handleDeleteClase(clase.id)}
                         >
-                          🗑️
+                          <Icon name="trash" size="sm" />
                         </button>
                       </td>
                     </tr>

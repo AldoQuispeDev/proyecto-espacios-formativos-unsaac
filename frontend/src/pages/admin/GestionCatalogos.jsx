@@ -4,7 +4,7 @@ import React from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import AdminSidebarLayout from '../../components/AdminSidebarLayout';
 
-// 🛑 IMPORTAR EL COMPONENTE FUNCIONAL DE MODALIDADES (CRUD IMPLEMENTADO)
+// IMPORTAR EL COMPONENTE FUNCIONAL DE MODALIDADES (CRUD IMPLEMENTADO)
 import GestionModalidades from "./GestionModalidades"; 
 
 // Componentes de sub-módulos (PENDIENTES: Se crearán a continuación)

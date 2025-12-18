@@ -58,6 +58,9 @@
 
 .contact-icon {
   font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ========== QUICK LINKS ========== */
@@ -88,6 +91,9 @@
 
 .link-icon {
   font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ========== SOCIAL LINKS ========== */
@@ -118,6 +124,9 @@
 
 .social-icon {
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ========== NEWSLETTER ========== */

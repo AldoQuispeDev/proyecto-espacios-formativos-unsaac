@@ -99,6 +99,9 @@
 
 .nav-icon {
   font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-text {
@@ -133,6 +136,9 @@
 .hamburger-icon {
   font-size: 1.5rem;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-dropdown {
@@ -195,6 +201,9 @@
 
 .nav-dropdown-icon {
   font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ========== CENTER: CLOCK ========== */
@@ -270,6 +279,9 @@
 
 .notification-icon {
   font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .notification-badge {
@@ -430,6 +442,9 @@
 
 .avatar-icon {
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .user-info {
@@ -455,6 +470,9 @@
   font-size: 0.7rem;
   color: white;
   margin-left: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .user-dropdown {
@@ -534,6 +552,9 @@
 
 .menu-icon {
   font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .menu-divider {

@@ -1,3 +1,6 @@
+/* Importar Bootstrap Icons */
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
 /* Reset básico */
 * {
   margin: 0;
@@ -40,4 +43,283 @@ a {
 button {
   font-family: inherit;
   cursor: pointer;
+}
+
+/* ========== ICON UTILITIES ========== */
+/*
+ * Sistema de utilidades globales para iconos Bootstrap
+ * 
+ * Este sistema proporciona clases reutilizables para:
+ * - Tamaños consistentes de iconos
+ * - Colores contextuales (success, danger, warning, info, etc.)
+ * - Alineación y espaciado con texto
+ * - Estilos interactivos y animaciones
+ * - Contenedores circulares y redondeados
+ * - Responsividad en dispositivos móviles
+ * 
+ * Uso:
+ * <Icon name="check-circle" className="icon-lg text-success" />
+ * <i className="bi bi-heart icon-xl text-danger"></i>
+ */
+
+/* Tamaños de ic
+.icon-xs {
+  font-size: 0.75rem; /* 12px */
+
+
+.icon-sm {
+  font-size: 0.875rem; /* 14px */
+}
+
+.icon-md {
+  font-size: 1.25rem; /* 20px */
+}
+
+.icon-lg {
+  font-size: 1.75rem; /* 28px */
+}
+
+.icon-xl {
+  font-size: 2.5rem; /* 40px */
+}
+
+.icon-2xl {
+  font-size: 3rem; /* 48px */
+}
+
+.icon-3xl {
+  font-size: 4rem; /* 64px */
+}
+
+/* Colores contextuales para iconos */
+.icon-primary,
+.text-primary {
+  color: #667eea !important;
+}
+
+.icon-secondary,
+.text-secondary {
+  color: #6b7280 !important;
+}
+
+.icon-success,
+.text-success {
+  color: #10b981 !important;
+}
+
+.icon-danger,
+.text-danger {
+  color: #ef4444 !important;
+}
+
+.icon-warning,
+.text-warning {
+  color: #f59e0b !important;
+}
+
+.icon-info,
+.text-info {
+  color: #3b82f6 !important;
+}
+
+.icon-light,
+.text-light {
+  color: #f3f4f6 !important;
+}
+
+.icon-dark,
+.text-dark {
+  color: #1f2937 !important;
+}
+
+.icon-white,
+.text-white {
+  color: #ffffff !important;
+}
+
+.icon-muted,
+.text-muted {
+  color: #a0f6fc !important;
+}
+
+/* Colores de fondo para iconos */
+.icon-bg-primary {
+  background-color: #667eea;
+  color: white;
+}
+
+.icon-bg-success {
+  background-color: #10b981;
+  color: white;
+}
+
+.icon-bg-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.icon-bg-warning {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.icon-bg-info {
+  background-color: #3b82f6;
+  color: white;
+}
+
+/* Alineación vertical de iconos con texto */
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.icon-text-gap {
+  gap: 0.5rem;
+}
+
+.icon-text-gap-sm {
+  gap: 0.25rem;
+}
+
+.icon-text-gap-lg {
+  gap: 0.75rem;
+}
+
+/* Espaciado de iconos */
+.icon-mr-1 {
+  margin-right: 0.25rem;
+}
+
+.icon-mr-2 {
+  margin-right: 0.5rem;
+}
+
+.icon-mr-3 {
+  margin-right: 0.75rem;
+}
+
+.icon-ml-1 {
+  margin-left: 0.25rem;
+}
+
+.icon-ml-2 {
+  margin-left: 0.5rem;
+}
+
+.icon-ml-3 {
+  margin-left: 0.75rem;
+}
+
+/* Iconos interactivos */
+i[role="button"],
+.icon-button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+i[role="button"]:hover,
+.icon-button:hover {
+  opacity: 0.7;
+  transform: scale(1.1);
+}
+
+i[role="button"]:active,
+.icon-button:active {
+  transform: scale(0.95);
+}
+
+/* Iconos con animación de rotación */
+.icon-spin {
+  animation: icon-spin 1s linear infinite;
+}
+
+@keyframes icon-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Iconos con animación de pulso */
+.icon-pulse {
+  animation: icon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes icon-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Contenedores de iconos circulares */
+.icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0.5rem;
+}
+
+.icon-circle-sm {
+  width: 32px;
+  height: 32px;
+  padding: 0.25rem;
+}
+
+.icon-circle-md {
+  width: 48px;
+  height: 48px;
+  padding: 0.5rem;
+}
+
+.icon-circle-lg {
+  width: 64px;
+  height: 64px;
+  padding: 0.75rem;
+}
+
+/* Contenedores de iconos redondeados */
+.icon-rounded {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+/* Responsive icon sizes */
+@media (max-width: 768px) {
+  .icon-responsive-sm {
+    font-size: 0.875rem !important;
+  }
+  
+  .icon-responsive-md {
+    font-size: 1rem !important;
+  }
+  
+  .icon-responsive-lg {
+    font-size: 1.25rem !important;
+  }
+  
+  .icon-3xl {
+    font-size: 3rem; /* Reduce en móviles */
+  }
+}
+
+@media (max-width: 480px) {
+  .icon-3xl {
+    font-size: 2.5rem; /* Reduce más en pantallas muy pequeñas */
+  }
+  
+  .icon-2xl {
+    font-size: 2rem;
+  }
 }

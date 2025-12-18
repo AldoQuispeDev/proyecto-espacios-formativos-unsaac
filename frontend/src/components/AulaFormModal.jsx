@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getAulas, createAula, updateAula, deleteAula } from "../api/horarios";
+import Icon from "./Icon";
 import "./AulaFormModal.css";
 
 export default function AulaFormModal({ isOpen, onClose }) {
@@ -90,7 +91,7 @@ export default function AulaFormModal({ isOpen, onClose }) {
     <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal-content aula-modal">
         <div className="modal-header">
-          <h2>🏫 Gestión de Aulas</h2>
+          <h2><Icon name="building" size="md" /> Gestión de Aulas</h2>
           <button className="modal-close" onClick={onClose}>
             ×
           </button>
@@ -168,14 +169,14 @@ export default function AulaFormModal({ isOpen, onClose }) {
                         onClick={() => handleEdit(aula)}
                         title="Editar"
                       >
-                        ✏️
+                        <Icon name="pencil" size="sm" />
                       </button>
                       <button
                         className="btn-delete-small"
                         onClick={() => handleDelete(aula.id)}
                         title="Eliminar"
                       >
-                        🗑️
+                        <Icon name="trash" size="sm" />
                       </button>
                     </div>
                   </div>

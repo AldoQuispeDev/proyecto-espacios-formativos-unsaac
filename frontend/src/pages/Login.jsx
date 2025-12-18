@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { login } from "../api/auth";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link, useLocation } from "react-router-dom";
+import Icon from "../components/Icon";
 import "./Login.css";
 
 export default function Login() {
@@ -23,7 +24,7 @@ export default function Login() {
 
       // Validar que el rol del usuario coincida con el seleccionado
       if (selectedRole && usuario.rol !== selectedRole) {
-        setMensaje(`❌ Esta cuenta no tiene permisos de ${selectedRole === "ADMIN" ? "Administrador" : "Alumno"}`);
+        setMensaje(`Esta cuenta no tiene permisos de ${selectedRole === "ADMIN" ? "Administrador" : "Alumno"}`);
         return;
       }
 
@@ -48,7 +49,7 @@ export default function Login() {
       console.error("Error completo:", error);
       console.error("Respuesta del servidor:", error.response?.data);
       const errorMsg = error.response?.data?.error || "Credenciales incorrectas o cuenta desactivada";
-      setMensaje(`❌ ${errorMsg}`);
+      setMensaje(errorMsg);
     }
   };
 
@@ -66,14 +67,22 @@ export default function Login() {
         <h2>Iniciar Sesión</h2>
         {selectedRole && (
           <div className="role-badge">
-            {selectedRole === "ADMIN" ? "👨‍💼 Administrador" : "🎓 Alumno"}
+            {selectedRole === "ADMIN" ? (
+              <>
+                <Icon name="person-badge" size="md" /> Administrador
+              </>
+            ) : (
+              <>
+                <Icon name="mortarboard" size="md" /> Alumno
+              </>
+            )}
           </div>
         )}
         {selectedRole === "ESTUDIANTE" && (
           <div className="info-box">
             <p className="info-text">
-              <strong>📧 Correo:</strong> El que usaste al matricularte<br/>
-              <strong>🔑 Contraseña:</strong> Tu número de DNI
+              <strong><Icon name="envelope" size="sm" /> Correo:</strong> El que usaste al matricularte<br/>
+              <strong><Icon name="key" size="sm" /> Contraseña:</strong> Tu número de DNI
             </p>
           </div>
         )}
