@@ -2,6 +2,7 @@
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+
 // Componentes de Página
 import Login from "./pages/Login";
 import Registro from "./pages/Registro";
@@ -12,13 +13,17 @@ import Contacto from "./pages/Contacto";
 import Test from "./pages/Test";
 import AulaVirtual from "./pages/estudiante/AulaVirtual";
 
+// Componentes de Docente
+import DashboardDocente from "./pages/docente/DashboardDocente";
+
 // Componentes de Administración
 import DashboardAdmin from "./pages/admin/DashboardAdmin";
 import ValidarMatricula from "./pages/admin/ValidarMatricula";
-import GestionDocentes from "./pages/admin/GestionDocentes";
 import GestionEstudiantes from "./pages/admin/GestionEstudiantes";
+import GestionDocentes from "./pages/admin/GestionDocentes";
 import GestionCatalogos from "./pages/admin/GestionCatalogos";
 import GestionHorarios from "./pages/admin/GestionHorarios";
+import EstudiantesDocente from "./pages/docente/EstudiantesDocente";
 
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -58,10 +63,18 @@ export default function App() {
 
           {/* RUTAS PROTEGIDAS DOCENTE */}
           <Route
-            path="/docente/panel"
+            path="/docente"
             element={
               <PrivateRoute role="DOCENTE">
-                <h1>Panel Docente (En construcción)</h1>
+                <DashboardDocente />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/docente/estudiantes"
+            element={
+              <PrivateRoute role="DOCENTE">
+                <EstudiantesDocente />
               </PrivateRoute>
             }
           />

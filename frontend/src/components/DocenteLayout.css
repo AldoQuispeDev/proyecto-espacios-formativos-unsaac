@@ -1,0 +1,77 @@
+/* src/components/DocenteLayout.css */
+
+.docente-layout {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+}
+
+.docente-container {
+  flex: 1;
+  width: 100%;
+  max-width: 100rem;
+  margin: 1.5rem auto;
+  background-color: white;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.docente-main {
+  padding: 2rem;
+  background-color: #f9fafb;
+  overflow-y: auto;
+}
+
+.docente-title {
+  font-size: 1.875rem;
+  font-weight: 300;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .docente-container {
+    margin: 1rem;
+  }
+
+  .docente-main {
+    padding: 1.5rem;
+  }
+
+  .docente-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .docente-container {
+    margin: 0.75rem;
+    border-radius: 0.5rem;
+  }
+
+  .docente-main {
+    padding: 1rem;
+  }
+
+  .docente-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .docente-container {
+    margin: 0.5rem;
+  }
+
+  .docente-main {
+    padding: 0.75rem;
+  }
+
+  .docente-title {
+    font-size: 1.125rem;
+  }
+}

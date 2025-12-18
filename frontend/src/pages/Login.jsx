@@ -39,7 +39,7 @@ export default function Login() {
           navigate("/estudiante/aula");
           break;
         case "DOCENTE":
-          navigate("/docente/panel");
+          navigate("/docente");
           break;
         default:
           navigate("/principal");

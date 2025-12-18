@@ -1,0 +1,201 @@
+/* frontend/src/pages/docente/EstudiantesDocente.css */
+
+.estudiantes-loading,
+.estudiantes-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.btn-retry {
+  margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-retry:hover {
+  background: #2980b9;
+}
+
+/* RESUMEN */
+.estudiantes-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-icon {
+  font-size: 2.5rem;
+}
+
+.summary-info h3 {
+  margin: 0;
+  font-size: 2rem;
+  color: #2c3e50;
+}
+
+.summary-info p {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+/* ESTADO VACÍO */
+.estudiantes-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.estudiantes-empty h3 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.estudiantes-empty p {
+  color: #7f8c8d;
+}
+
+/* FILTROS */
+.estudiantes-filters {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 250px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.search-input,
+.filter-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.search-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+/* TABLA */
+.estudiantes-table-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.estudiantes-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.estudiantes-table thead {
+  background: #34495e;
+  color: white;
+}
+
+.estudiantes-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.estudiantes-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.estudiantes-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.nombre-completo {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.badge-grupo {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #3498db;
+  color: white;
+  border-radius: 15px;
+  font-size: 0.85rem;
+}
+
+.no-results {
+  text-align: center;
+  color: #7f8c8d;
+  padding: 2rem !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .estudiantes-filters {
+    flex-direction: column;
+  }
+
+  .estudiantes-table {
+    font-size: 0.9rem;
+  }
+
+  .estudiantes-table th,
+  .estudiantes-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}

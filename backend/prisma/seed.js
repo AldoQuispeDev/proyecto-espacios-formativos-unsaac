@@ -1,7 +1,11 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs'; // ⚠️ Asegúrate de tener instalado: npm install bcryptjs
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
+
 
 async function main() {
   console.log('🌱 Iniciando carga de datos base...');

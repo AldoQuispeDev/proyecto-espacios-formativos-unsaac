@@ -22,6 +22,7 @@ export default function AdminHeader() {
     { name: 'Gestión de Estudiantes', path: '/admin/estudiantes', icon: '🎓' },
     { name: 'Gestión de Horarios', path: '/admin/horarios', icon: '📅' },
     { name: 'Catálogos Académicos', path: '/admin/catalogos', icon: '📚' },
+    
   ];
 
   const isActive = (path) => location.pathname === path;

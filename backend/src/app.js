@@ -16,12 +16,15 @@ import estudiantesRoutes from "./routes/estudiantes.routes.js";
 import modalidadesRoutes from "./routes/modalidades.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import horariosRoutes from "./routes/horarios.routes.js";
+import docentePanelRoutes from "./routes/docentePanel.routes.js";
+
 const app = express();
 
 // Middleware general
 app.use(cors({ origin: process.env.CLIENT_ORIGIN, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+
 
 
 // Rutas
@@ -36,6 +39,8 @@ app.use("/api/admin/estudiantes", estudiantesRoutes);
 app.use("/api/admin/modalidades", modalidadesRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/horarios", horariosRoutes);
+app.use("/api/docente", docentePanelRoutes);
+
 // Ruta de pruebag
 app.get("/api/health", (_, res) => res.json({ ok: true }));
 
