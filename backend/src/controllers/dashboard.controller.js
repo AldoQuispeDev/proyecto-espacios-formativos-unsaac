@@ -1,5 +1,3 @@
-// src/controllers/dashboard.controller.js
-
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -9,7 +7,7 @@ const prisma = new PrismaClient();
  */
 export const obtenerEstadisticas = async (req, res) => {
   try {
-    // Contar usuarios por rol
+    // Usuarios por rol
     const totalEstudiantes = await prisma.usuario.count({
       where: { rol: "ESTUDIANTE", activo: true },
     });
@@ -22,7 +20,7 @@ export const obtenerEstadisticas = async (req, res) => {
       where: { rol: "ADMIN", activo: true },
     });
 
-    // Contar matrículas por estado
+    // Matrículas por estado
     const matriculasPendientes = await prisma.matricula.count({
       where: { estado: "PENDIENTE" },
     });
@@ -37,13 +35,12 @@ export const obtenerEstadisticas = async (req, res) => {
 
     const totalMatriculas = await prisma.matricula.count();
 
-    // Contar grupos, carreras y asignaturas
+    // Catálogos (reales)
     const totalGrupos = await prisma.grupo.count();
-    const totalCarreras = await prisma.carrera.count();
     const totalAsignaturas = await prisma.asignatura.count();
     const totalModalidades = await prisma.modalidad.count();
 
-    // Últimos estudiantes registrados (últimos 5)
+    // Últimos estudiantes
     const ultimosEstudiantes = await prisma.estudiante.findMany({
       take: 5,
       orderBy: { id: "desc" },
@@ -60,7 +57,7 @@ export const obtenerEstadisticas = async (req, res) => {
       },
     });
 
-    // Últimas matrículas (últimas 5)
+    // Últimas matrículas
     const ultimasMatriculas = await prisma.matricula.findMany({
       take: 5,
       orderBy: { createdAt: "desc" },
@@ -76,7 +73,7 @@ export const obtenerEstadisticas = async (req, res) => {
             },
           },
         },
-        grupo: { select: { nombre: true } },
+        grupo: { select: { letra: true } },
         modalidad: { select: { nombre: true } },
       },
     });
@@ -96,7 +93,6 @@ export const obtenerEstadisticas = async (req, res) => {
       },
       catalogos: {
         grupos: totalGrupos,
-        carreras: totalCarreras,
         asignaturas: totalAsignaturas,
         modalidades: totalModalidades,
       },
@@ -107,6 +103,8 @@ export const obtenerEstadisticas = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Error al obtener estadísticas:", error);
-    res.status(500).json({ error: "Error al obtener estadísticas del sistema" });
+    res.status(500).json({
+      error: "Error al obtener estadísticas del sistema",
+    });
   }
 };

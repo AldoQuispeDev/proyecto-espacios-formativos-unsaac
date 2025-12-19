@@ -107,65 +107,62 @@ export const listarMatriculasService = async () => {
 
 export const aprobarMatriculaService = async (id) => {
   const matriculaId = parseInt(id);
-  
-  // 1. Obtener la matrícula con sus datos
+
+  // 1. Obtener la matrícula
   const matricula = await prisma.matricula.findUnique({
     where: { id: matriculaId },
     include: {
       estudiante: true,
       grupo: true,
       modalidad: true,
-    }
+    },
   });
 
   if (!matricula) {
     throw new Error("Matrícula no encontrada");
   }
 
-  // 2. Verificar si ya tiene un estudiante asociado
+  // 2. Si ya tiene estudiante → solo aprobar
   if (matricula.estudianteId) {
-    // Ya tiene estudiante, solo actualizar estado
     return await prisma.matricula.update({
       where: { id: matriculaId },
       data: { estado: "APROBADA" },
     });
   }
 
-  // 3. Verificar si ya existe un usuario con ese correo
+  // 3. Verificar si existe usuario con ese correo
   const usuarioExistente = await prisma.usuario.findUnique({
-    where: { correo: matricula.email }
+    where: { correo: matricula.email },
   });
 
   if (usuarioExistente) {
-    // Si existe el usuario, buscar o crear el estudiante
+    // Buscar estudiante asociado
     let estudiante = await prisma.estudiante.findUnique({
-      where: { usuarioId: usuarioExistente.id }
+      where: { usuarioId: usuarioExistente.id },
     });
 
+    // Crear estudiante si no existe
     if (!estudiante) {
-      // Crear estudiante para el usuario existente
       estudiante = await prisma.estudiante.create({
         data: {
           usuarioId: usuarioExistente.id,
-          fechaNacimiento: new Date(),
-        }
+        },
       });
     }
 
-    // Vincular matrícula con estudiante y aprobar
+    // Vincular matrícula
     return await prisma.matricula.update({
       where: { id: matriculaId },
-      data: { 
+      data: {
         estado: "APROBADA",
-        estudianteId: estudiante.id
+        estudianteId: estudiante.id,
       },
     });
   }
 
-  // 4. No existe usuario, crear usuario + estudiante automáticamente
-  const passwordHash = await bcrypt.hash(matricula.dni, 10); // Contraseña = DNI
+  // 4. Crear usuario + estudiante automáticamente
+  const passwordHash = await bcrypt.hash(matricula.dni, 10);
 
-  // Crear usuario y estudiante en una transacción
   const resultado = await prisma.$transaction(async (tx) => {
     // Crear usuario
     const nuevoUsuario = await tx.usuario.create({
@@ -179,23 +176,22 @@ export const aprobarMatriculaService = async (id) => {
         password: passwordHash,
         rol: "ESTUDIANTE",
         activo: true,
-      }
+      },
     });
 
     // Crear estudiante
     const nuevoEstudiante = await tx.estudiante.create({
       data: {
         usuarioId: nuevoUsuario.id,
-        fechaNacimiento: new Date(),
-      }
+      },
     });
 
-    // Actualizar matrícula: aprobar y vincular con estudiante
+    // Aprobar matrícula
     const matriculaActualizada = await tx.matricula.update({
       where: { id: matriculaId },
-      data: { 
+      data: {
         estado: "APROBADA",
-        estudianteId: nuevoEstudiante.id
+        estudianteId: nuevoEstudiante.id,
       },
     });
 
@@ -204,7 +200,6 @@ export const aprobarMatriculaService = async (id) => {
 
   return resultado;
 };
-
 export const rechazarMatriculaService = async (id) => {
   return await prisma.matricula.update({
     where: { id: parseInt(id) },

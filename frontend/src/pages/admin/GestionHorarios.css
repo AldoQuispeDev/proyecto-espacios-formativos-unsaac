@@ -1,437 +1,265 @@
-/* Gestión de Horarios */
+/* --- VARIABLES DE DASHBOARD --- */
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
+  --bg-main: #f8fafc;
+  --white: #ffffff;
+  --text-title: #0f172a;
+  --text-body: #475569;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
 
+/* --- HEADER Y ACCIONES --- */
 .horarios-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 24px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e5e7eb;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.horarios-header-left h2 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 8px 0;
-}
-
-.horarios-subtitle {
-  font-size: 14px;
-  color: #6b7280;
+.horarios-header h2 {
+  font-size: 1.75rem;
+  color: var(--text-title);
   margin: 0;
 }
 
-.horarios-header-right {
+.horarios-header p {
+  color: var(--text-body);
+  margin: 4px 0 0;
+}
+
+.horarios-actions {
   display: flex;
   gap: 12px;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
-  border: none;
-  padding: 12px 24px;
+/* Botones genéricos */
+.horarios-actions button, .btn-primary, .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
   border-radius: 8px;
-  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  background: var(--primary-dark);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
   background: white;
-  color: #3b82f6;
-  border: 2px solid #3b82f6;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+  border-color: var(--border-color);
+  color: var(--text-body);
 }
 
 .btn-secondary:hover {
-  background: #eff6ff;
+  background: var(--bg-main);
 }
 
-/* Toolbar */
+/* --- TOOLBAR (VISTAS) --- */
 .horarios-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  padding: 16px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.horarios-filters {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.filter-select {
-  padding: 10px 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-}
-
-.btn-clear-filter {
-  background: #fee2e2;
-  color: #dc2626;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-clear-filter:hover {
-  background: #fecaca;
-}
-
-.horarios-view-toggle {
-  display: flex;
-  gap: 8px;
-  background: #f3f4f6;
+  display: inline-flex;
+  background: #e2e8f0;
   padding: 4px;
-  border-radius: 8px;
+  border-radius: 10px;
+  margin-bottom: 2rem;
 }
 
-.view-btn {
+.horarios-toolbar button {
+  padding: 8px 16px;
+  border: none;
   background: transparent;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
+  color: var(--text-body);
   font-weight: 600;
+  border-radius: 7px;
   cursor: pointer;
-  transition: all 0.2s;
-  color: #6b7280;
-}
-
-.view-btn.active {
-  background: white;
-  color: #3b82f6;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Error Banner */
-.error-banner {
-  background: #fee2e2;
-  border: 2px solid #fecaca;
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin-bottom: 24px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
 }
 
-.error-banner p {
-  color: #991b1b;
-  font-weight: 600;
-  margin: 0;
+.horarios-toolbar button.active {
+  background: var(--white);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
 }
 
-.error-banner button {
-  background: #dc2626;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* VISTA CALENDARIO */
+/* --- CALENDARIO GRID --- */
 .horario-calendario {
-  background: white;
+  background: var(--white);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-color);
   overflow: hidden;
-}
-
-.calendario-grid {
-  display: flex;
-  flex-direction: column;
-  min-width: 1200px;
+  box-shadow: var(--shadow-md);
+  display: grid;
 }
 
 .calendario-header {
   display: grid;
-  grid-template-columns: 80px repeat(6, 1fr);
-  background: #f9fafb;
-  border-bottom: 2px solid #e5e7eb;
+  grid-template-columns: 80px repeat(5, 1fr);
+  background: #f1f5f9;
+  border-bottom: 2px solid var(--border-color);
 }
 
-.calendario-cell {
+.hora-header, .dia-header {
   padding: 12px;
-  border-right: 1px solid #e5e7eb;
-}
-
-.calendario-cell:last-child {
-  border-right: none;
-}
-
-.hora-header {
-  font-weight: 700;
-  color: #6b7280;
-  font-size: 13px;
   text-align: center;
-}
-
-.dia-header {
   font-weight: 700;
-  color: #1f2937;
-  font-size: 14px;
-  text-align: center;
+  color: var(--text-title);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .calendario-row {
   display: grid;
-  grid-template-columns: 80px repeat(6, 1fr);
-  border-bottom: 1px solid #e5e7eb;
-  min-height: 80px;
+  grid-template-columns: 80px repeat(5, 1fr);
+  border-bottom: 1px solid var(--border-color);
+  min-height: 100px;
 }
 
 .hora-cell {
-  background: #f9fafb;
-  font-weight: 600;
-  color: #6b7280;
-  font-size: 13px;
-  text-align: center;
+  background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 600;
+  color: var(--text-body);
+  font-size: 0.8rem;
+  border-right: 1px solid var(--border-color);
 }
 
 .clase-cell {
+  padding: 6px;
+  background: #ffffff;
+  border-right: 1px solid #f1f5f9;
   position: relative;
-  padding: 8px;
-  transition: background 0.2s;
 }
 
-.clase-cell:hover {
-  background: #f9fafb;
-}
-
-/* Tarjeta de Clase */
+/* --- CARDS DE CLASE --- */
 .clase-card {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  border-left: 4px solid #3b82f6;
-  border-radius: 8px;
+  background: #eff6ff;
+  border-left: 4px solid var(--primary);
   padding: 10px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .clase-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.clase-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.clase-asignatura {
-  font-weight: 700;
-  color: #1e40af;
-  font-size: 13px;
-}
-
-.clase-grupo {
-  background: #3b82f6;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.clase-card-body p {
-  margin: 4px 0;
-  font-size: 12px;
-  color: #1f2937;
-}
-
-.clase-docente,
-.clase-aula,
-.clase-horario {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* VISTA LISTA */
-.horario-lista {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-}
-
-.lista-table-container {
-  overflow-x: auto;
-}
-
-.lista-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.lista-table thead {
-  background: #f9fafb;
-}
-
-.lista-table th {
-  padding: 16px;
-  text-align: left;
-  font-weight: 700;
-  color: #6b7280;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 2px solid #e5e7eb;
-}
-
-.lista-table td {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 14px;
-  color: #1f2937;
-}
-
-.lista-table tbody tr:hover {
-  background: #f9fafb;
-}
-
-.empty-state {
-  text-align: center;
-  color: #9ca3af;
-  font-style: italic;
-  padding: 40px !important;
-}
-
-.actions-cell {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-edit,
-.btn-delete {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.btn-edit:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-md);
   background: #dbeafe;
 }
 
-.btn-delete:hover {
-  background: #fee2e2;
+.clase-card strong {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--primary-dark);
+  margin-bottom: 4px;
 }
 
-/* Loading */
-.loading-container {
+.clase-card .small {
+  font-size: 0.72rem;
+  color: #64748b;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  color: #6b7280;
+  gap: 5px;
+  margin-top: 2px;
 }
 
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid #e5e7eb;
-  border-top-color: #3b82f6;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-bottom: 16px;
+/* --- TABLA DE LISTA --- */
+.horario-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.horario-table th {
+  background: #f1f5f9;
+  padding: 15px;
+  text-align: left;
+  font-size: 0.85rem;
+  color: var(--text-title);
+  border-bottom: 2px solid var(--border-color);
 }
 
-/* Responsive */
-@media (max-width: 1400px) {
-  .calendario-grid {
-    min-width: 1000px;
-  }
+.horario-table td {
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  color: var(--text-body);
 }
 
-@media (max-width: 768px) {
-  .horarios-header {
-    flex-direction: column;
-    gap: 16px;
-  }
+.horario-table tr:hover {
+  background: #f8fafc;
+}
 
-  .horarios-header-right {
-    width: 100%;
-    flex-direction: column;
-  }
+/* Botones de acción en tabla */
+.horario-table button {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-right: 5px;
+  transition: background 0.2s;
+}
 
-  .horarios-header-right button {
-    width: 100%;
-  }
+.horario-table button:first-child { color: var(--primary); }
+.horario-table button:last-child { color: #ef4444; }
 
-  .horarios-toolbar {
-    flex-direction: column;
-    gap: 16px;
-  }
+.horario-table button:hover {
+  background: #e2e8f0;
+}
 
-  .horarios-filters {
-    width: 100%;
-    flex-direction: column;
-  }
+/* --- BANNER DE ERROR --- */
+.error-banner {
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #fecaca;
+}
 
-  .filter-select {
-    width: 100%;
-  }
+.error-banner button {
+  margin-left: auto;
+  background: #991b1b;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-  .horarios-view-toggle {
-    width: 100%;
+/* --- RESPONSIVE --- */
+@media (max-width: 1024px) {
+  .calendario-header, .calendario-row {
+    grid-template-columns: 60px repeat(5, 180px); /* Habilita scroll horizontal */
   }
-
-  .view-btn {
-    flex: 1;
-  }
-
   .horario-calendario {
     overflow-x: auto;
   }

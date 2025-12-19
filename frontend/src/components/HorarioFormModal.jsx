@@ -1,77 +1,153 @@
-import { useState, useEffect } from "react";
-import { createClase, updateClase } from "../api/horarios";
-import { getDocentes } from "../api/docentes";
-import { getGrupos, getAsignaturas } from "../api/catalogos";
-import { getAulas } from "../api/horarios";
+import { useEffect, useMemo, useState } from "react";
+import {
+  createClase,
+  updateClase,
+  getAulas,
+  getModalidades,
+  getGrupos,
+  getAsignaturas,
+  getTurnos,
+  getDocentesPorAsignatura,
+} from "../api/horarios";
 import "./HorarioFormModal.css";
 
-const DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+const UI_DIAS = [
+  { label: "Lunes", value: "LUNES" },
+  { label: "Martes", value: "MARTES" },
+  { label: "Miércoles", value: "MIERCOLES" },
+  { label: "Jueves", value: "JUEVES" },
+  { label: "Viernes", value: "VIERNES" },
+];
+
+const HORAS_VALIDAS = ["07:00", "09:00", "11:00", "16:00", "18:00"];
 
 export default function HorarioFormModal({ isOpen, onClose, onSuccess, clase }) {
   const isEditMode = !!clase;
 
-  const [formData, setFormData] = useState({
-    docenteId: "",
-    asignaturaId: "",
+  const [form, setForm] = useState({
+    modalidadId: "",
     grupoId: "",
-    aulaId: "",
-    dia: "",
+    turnoId: "",
+    asignaturaId: "",
+    docenteId: "",
+    diaSemana: "",
     horaInicio: "",
-    horaFin: "",
+    aulaId: "",
   });
 
+  const [modalidades, setModalidades] = useState([]);
+  const [grupos, setGruposState] = useState([]);
+  const [turnos, setTurnos] = useState([]);
+  const [asignaturas, setAsignaturasState] = useState([]);
   const [docentes, setDocentes] = useState([]);
-  const [grupos, setGrupos] = useState([]);
-  const [asignaturas, setAsignaturas] = useState([]);
-  const [aulas, setAulas] = useState([]);
+  const [aulas, setAulasState] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const modalidadSeleccionada = useMemo(
+    () => modalidades.find((m) => String(m.id) === String(form.modalidadId)),
+    [modalidades, form.modalidadId]
+  );
+
+  const pisosSugeridos = useMemo(() => {
+    if (!modalidadSeleccionada) return [];
+    const pisos = [modalidadSeleccionada.pisoPreferido];
+    if (modalidadSeleccionada.pisoAlterno) pisos.push(modalidadSeleccionada.pisoAlterno);
+    pisos.push(3);
+    return [...new Set(pisos)];
+  }, [modalidadSeleccionada]);
+
   useEffect(() => {
-    if (isOpen) {
-      fetchData();
-      if (isEditMode) {
-        const horaInicio = new Date(clase.horaInicio);
-        const horaFin = new Date(clase.horaFin);
+    if (!isOpen) return;
+    (async () => {
+      setError("");
+      const [m, t, a] = await Promise.all([getModalidades(), getTurnos(), getAsignaturas()]);
+      setModalidades(m.data);
+      setTurnos(t.data);
+      setAsignaturasState(a.data);
+    })().catch((e) => setError(e.response?.data?.error || "Error al cargar datos"));
+  }, [isOpen]);
 
-        setFormData({
-          docenteId: clase.docenteId.toString(),
-          asignaturaId: clase.asignaturaId.toString(),
-          grupoId: clase.grupoId.toString(),
-          aulaId: clase.aulaId.toString(),
-          dia: clase.dia,
-          horaInicio: `${horaInicio.getHours().toString().padStart(2, "0")}:${horaInicio.getMinutes().toString().padStart(2, "0")}`,
-          horaFin: `${horaFin.getHours().toString().padStart(2, "0")}:${horaFin.getMinutes().toString().padStart(2, "0")}`,
-        });
-      }
-    }
-  }, [isOpen, clase, isEditMode]);
+  // Edit preload
+  useEffect(() => {
+    if (!isOpen || !isEditMode || !clase) return;
 
-  const fetchData = async () => {
-    try {
-      const [docentesRes, gruposRes, asignaturasRes, aulasRes] = await Promise.all([
-        getDocentes(),
-        getGrupos(),
-        getAsignaturas(),
-        getAulas(),
-      ]);
+    const modalidadId = String(clase.grupo?.modalidad?.id || "");
+    const grupoId = String(clase.grupoId || clase.grupo?.id || "");
+    const turnoId = String(clase.turnoId || clase.turno?.id || "");
+    const asignaturaId = String(clase.asignaturaId || clase.asignatura?.id || "");
+    const docenteId = String(clase.docenteId || clase.docente?.id || "");
+    const aulaId = String(clase.aulaId || clase.aula?.id || "");
+    const diaSemana = clase.diaSemana || "";
 
-      setDocentes(docentesRes.data);
-      setGrupos(gruposRes.data);
-      setAsignaturas(asignaturasRes.data);
-      setAulas(aulasRes.data);
-    } catch (err) {
-      console.error("Error al cargar datos:", err);
-      setError("Error al cargar los datos del formulario");
-    }
-  };
+    const hh = Math.floor(clase.horaInicio / 60).toString().padStart(2, "0");
+    const mm = (clase.horaInicio % 60).toString().padStart(2, "0");
+    const horaInicio = `${hh}:${mm}`;
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+    setForm({
+      modalidadId,
+      grupoId,
+      turnoId,
+      asignaturaId,
+      docenteId,
+      diaSemana,
+      horaInicio,
+      aulaId,
     });
-  };
+  }, [isOpen, isEditMode, clase]);
+
+  // Modalidad -> grupos
+  useEffect(() => {
+    if (!form.modalidadId) {
+      setGruposState([]);
+      return;
+    }
+    (async () => {
+      const res = await getGrupos({ modalidadId: form.modalidadId });
+      setGruposState(res.data);
+    })().catch(() => {});
+  }, [form.modalidadId]);
+
+  // Aulas sugeridas por piso
+  useEffect(() => {
+    if (!pisosSugeridos.length) {
+      setAulasState([]);
+      return;
+    }
+    (async () => {
+      const all = [];
+      for (const piso of pisosSugeridos) {
+        const res = await getAulas({ piso });
+        all.push(...res.data);
+      }
+      const map = new Map(all.map((x) => [x.id, x]));
+      setAulasState([...map.values()]);
+    })().catch(() => {});
+  }, [pisosSugeridos]);
+
+  // Asignatura -> docentes
+  useEffect(() => {
+    if (!form.asignaturaId) {
+      setDocentes([]);
+      return;
+    }
+    (async () => {
+      const res = await getDocentesPorAsignatura({ asignaturaId: form.asignaturaId });
+      setDocentes(res.data);
+    })().catch(() => {});
+  }, [form.asignaturaId]);
+
+  const horaFinUI = useMemo(() => {
+    if (!form.horaInicio) return "";
+    const [h, m] = form.horaInicio.split(":").map(Number);
+    const total = h * 60 + m + 120;
+    const hh = Math.floor(total / 60).toString().padStart(2, "0");
+    const mm = (total % 60).toString().padStart(2, "0");
+    return `${hh}:${mm}`;
+  }, [form.horaInicio]);
+
+  const set = (name) => (e) => setForm((p) => ({ ...p, [name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,25 +155,27 @@ export default function HorarioFormModal({ isOpen, onClose, onSuccess, clase }) 
     setError("");
 
     try {
-      // Convertir horas a formato DateTime
-      const baseDate = "2024-01-01"; // Fecha base para las horas
-      const dataToSend = {
-        ...formData,
-        horaInicio: `${baseDate}T${formData.horaInicio}:00.000Z`,
-        horaFin: `${baseDate}T${formData.horaFin}:00.000Z`,
+      if (!HORAS_VALIDAS.includes(form.horaInicio)) {
+        throw new Error("Hora inválida. Usa 07:00, 09:00, 11:00, 16:00 o 18:00");
+      }
+
+      const payload = {
+        grupoId: Number(form.grupoId),
+        asignaturaId: Number(form.asignaturaId),
+        docenteId: Number(form.docenteId),
+        aulaId: Number(form.aulaId),
+        turnoId: Number(form.turnoId),
+        diaSemana: form.diaSemana,
+        horaInicio: form.horaInicio,
       };
 
-      if (isEditMode) {
-        await updateClase(clase.id, dataToSend);
-      } else {
-        await createClase(dataToSend);
-      }
+      if (isEditMode) await updateClase(clase.id, payload);
+      else await createClase(payload);
 
       onSuccess();
       onClose();
     } catch (err) {
-      console.error("Error al guardar clase:", err);
-      setError(err.response?.data?.error || "Error al guardar la clase");
+      setError(err.response?.data?.error || err.message || "Error al guardar la clase");
     } finally {
       setLoading(false);
     }
@@ -110,157 +188,108 @@ export default function HorarioFormModal({ isOpen, onClose, onSuccess, clase }) 
       <div className="modal-content horario-modal">
         <div className="modal-header">
           <h2>{isEditMode ? "Editar Clase" : "Nueva Clase"}</h2>
-          <button className="modal-close" onClick={onClose}>
-            ×
-          </button>
+          <button className="modal-close" onClick={onClose}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="horario-form">
           {error && <div className="form-error">{error}</div>}
 
           <div className="form-grid">
-            {/* Grupo */}
             <div className="form-group">
-              <label htmlFor="grupoId">
-                Grupo <span className="required">*</span>
-              </label>
-              <select
-                id="grupoId"
-                name="grupoId"
-                value={formData.grupoId}
-                onChange={handleChange}
-                required
-              >
+              <label>Modalidad *</label>
+              <select value={form.modalidadId} onChange={set("modalidadId")} required>
+                <option value="">Seleccionar modalidad</option>
+                {modalidades.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.nombre} (Piso pref: {m.pisoPreferido}{m.pisoAlterno ? ` / alt: ${m.pisoAlterno}` : ""})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Grupo *</label>
+              <select value={form.grupoId} onChange={set("grupoId")} required disabled={!form.modalidadId}>
                 <option value="">Seleccionar grupo</option>
-                {grupos.map((grupo) => (
-                  <option key={grupo.id} value={grupo.id}>
-                    Grupo {grupo.nombre}
+                {grupos.map((g) => (
+                  <option key={g.id} value={g.id}>Grupo {g.letra}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Turno *</label>
+              <select value={form.turnoId} onChange={set("turnoId")} required>
+                <option value="">Seleccionar turno</option>
+                {turnos.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.nombre} ({String(Math.floor(t.horaInicio/60)).padStart(2,"0")}:{String(t.horaInicio%60).padStart(2,"0")} - {String(Math.floor(t.horaFin/60)).padStart(2,"0")}:{String(t.horaFin%60).padStart(2,"0")})
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Asignatura */}
             <div className="form-group">
-              <label htmlFor="asignaturaId">
-                Asignatura <span className="required">*</span>
-              </label>
-              <select
-                id="asignaturaId"
-                name="asignaturaId"
-                value={formData.asignaturaId}
-                onChange={handleChange}
-                required
-              >
+              <label>Asignatura *</label>
+              <select value={form.asignaturaId} onChange={set("asignaturaId")} required>
                 <option value="">Seleccionar asignatura</option>
-                {asignaturas.map((asignatura) => (
-                  <option key={asignatura.id} value={asignatura.id}>
-                    {asignatura.nombre}
-                  </option>
+                {asignaturas.map((a) => (
+                  <option key={a.id} value={a.id}>{a.nombre}</option>
                 ))}
               </select>
             </div>
 
-            {/* Docente */}
             <div className="form-group">
-              <label htmlFor="docenteId">
-                Docente <span className="required">*</span>
-              </label>
-              <select
-                id="docenteId"
-                name="docenteId"
-                value={formData.docenteId}
-                onChange={handleChange}
-                required
-              >
+              <label>Docente (por especialidad) *</label>
+              <select value={form.docenteId} onChange={set("docenteId")} required disabled={!form.asignaturaId}>
                 <option value="">Seleccionar docente</option>
-                {docentes.map((docente) => (
-                  <option key={docente.usuarioId} value={docente.usuarioId}>
-                    {docente.usuario.nombre} {docente.usuario.apellidoPaterno}{" "}
-                    {docente.usuario.apellidoMaterno}
+                {docentes.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.usuario?.nombre} {d.usuario?.apellidoPaterno} {d.usuario?.apellidoMaterno}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Aula */}
             <div className="form-group">
-              <label htmlFor="aulaId">
-                Aula <span className="required">*</span>
-              </label>
-              <select
-                id="aulaId"
-                name="aulaId"
-                value={formData.aulaId}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Seleccionar aula</option>
-                {aulas.map((aula) => (
-                  <option key={aula.id} value={aula.id}>
-                    {aula.nombre}
-                    {aula.capacidad && ` (Cap: ${aula.capacidad})`}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Día */}
-            <div className="form-group">
-              <label htmlFor="dia">
-                Día <span className="required">*</span>
-              </label>
-              <select
-                id="dia"
-                name="dia"
-                value={formData.dia}
-                onChange={handleChange}
-                required
-              >
+              <label>Día *</label>
+              <select value={form.diaSemana} onChange={set("diaSemana")} required>
                 <option value="">Seleccionar día</option>
-                {DIAS_SEMANA.map((dia) => (
-                  <option key={dia} value={dia}>
-                    {dia}
-                  </option>
+                {UI_DIAS.map((d) => (
+                  <option key={d.value} value={d.value}>{d.label}</option>
                 ))}
               </select>
             </div>
 
-            {/* Hora Inicio */}
             <div className="form-group">
-              <label htmlFor="horaInicio">
-                Hora Inicio <span className="required">*</span>
-              </label>
-              <input
-                type="time"
-                id="horaInicio"
-                name="horaInicio"
-                value={formData.horaInicio}
-                onChange={handleChange}
-                required
-              />
+              <label>Hora Inicio *</label>
+              <select value={form.horaInicio} onChange={set("horaInicio")} required>
+                <option value="">Seleccionar</option>
+                {HORAS_VALIDAS.map((h) => (
+                  <option key={h} value={h}>{h}</option>
+                ))}
+              </select>
+              {horaFinUI && <small>Hora fin automática: <b>{horaFinUI}</b></small>}
             </div>
 
-            {/* Hora Fin */}
             <div className="form-group">
-              <label htmlFor="horaFin">
-                Hora Fin <span className="required">*</span>
-              </label>
-              <input
-                type="time"
-                id="horaFin"
-                name="horaFin"
-                value={formData.horaFin}
-                onChange={handleChange}
-                required
-              />
+              <label>Aula (sugerida por piso) *</label>
+              <select value={form.aulaId} onChange={set("aulaId")} required disabled={!form.modalidadId}>
+                <option value="">Seleccionar aula</option>
+                {aulas.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.nombre} (Piso {a.piso}){a.capacidad ? ` - Cap: ${a.capacidad}` : ""}
+                  </option>
+                ))}
+              </select>
+              {pisosSugeridos.length > 0 && (
+                <small>Pisos sugeridos: <b>{pisosSugeridos.join(", ")}</b></small>
+              )}
             </div>
           </div>
 
           <div className="form-actions">
-            <button type="button" className="btn-cancel" onClick={onClose}>
-              Cancelar
-            </button>
+            <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
             <button type="submit" className="btn-submit" disabled={loading}>
               {loading ? "Guardando..." : isEditMode ? "Actualizar" : "Crear Clase"}
             </button>

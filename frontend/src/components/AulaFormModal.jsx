@@ -7,12 +7,16 @@ export default function AulaFormModal({ isOpen, onClose }) {
   const [aulas, setAulas] = useState([]);
   const [formData, setFormData] = useState({
     nombre: "",
+    piso: "",
     capacidad: "",
   });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // =========================
+  // CARGAR AULAS
+  // =========================
   useEffect(() => {
     if (isOpen) {
       fetchAulas();
@@ -24,11 +28,14 @@ export default function AulaFormModal({ isOpen, onClose }) {
       const res = await getAulas();
       setAulas(res.data);
     } catch (err) {
-      console.error("Error al cargar aulas:", err);
+      console.error("❌ Error al cargar aulas:", err);
       setError("Error al cargar las aulas");
     }
   };
 
+  // =========================
+  // HANDLERS
+  // =========================
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -42,18 +49,27 @@ export default function AulaFormModal({ isOpen, onClose }) {
     setError("");
 
     try {
-      if (editingId) {
-        await updateAula(editingId, formData);
-      } else {
-        await createAula(formData);
+      const payload = {
+        nombre: formData.nombre.trim(),
+        piso: Number(formData.piso),
+        capacidad: formData.capacidad ? Number(formData.capacidad) : 40,
+      };
+
+      if (!payload.nombre || !payload.piso) {
+        throw new Error("Nombre y piso son obligatorios");
       }
 
-      setFormData({ nombre: "", capacidad: "" });
-      setEditingId(null);
+      if (editingId) {
+        await updateAula(editingId, payload);
+      } else {
+        await createAula(payload);
+      }
+
+      resetForm();
       fetchAulas();
     } catch (err) {
-      console.error("Error al guardar aula:", err);
-      setError(err.response?.data?.error || "Error al guardar el aula");
+      console.error("❌ Error al guardar aula:", err);
+      setError(err.response?.data?.error || err.message || "Error al guardar el aula");
     } finally {
       setLoading(false);
     }
@@ -62,7 +78,8 @@ export default function AulaFormModal({ isOpen, onClose }) {
   const handleEdit = (aula) => {
     setFormData({
       nombre: aula.nombre,
-      capacidad: aula.capacidad || "",
+      piso: aula.piso.toString(),
+      capacidad: aula.capacidad?.toString() || "",
     });
     setEditingId(aula.id);
   };
@@ -74,95 +91,132 @@ export default function AulaFormModal({ isOpen, onClose }) {
       await deleteAula(id);
       fetchAulas();
     } catch (err) {
-      console.error("Error al eliminar aula:", err);
+      console.error("❌ Error al eliminar aula:", err);
       alert(err.response?.data?.error || "Error al eliminar el aula");
     }
   };
 
-  const handleCancel = () => {
-    setFormData({ nombre: "", capacidad: "" });
+  const resetForm = () => {
+    setFormData({
+      nombre: "",
+      piso: "",
+      capacidad: "",
+    });
     setEditingId(null);
     setError("");
   };
 
   if (!isOpen) return null;
 
+  // =========================
+  // RENDER
+  // =========================
   return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className="modal-overlay"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="modal-content aula-modal">
+        {/* HEADER */}
         <div className="modal-header">
-          <h2><Icon name="building" size="md" /> Gestión de Aulas</h2>
+          <h2>
+            <Icon name="building" size="md" /> Gestión de Aulas
+          </h2>
           <button className="modal-close" onClick={onClose}>
             ×
           </button>
         </div>
 
         <div className="aula-modal-body">
-          {/* FORMULARIO */}
+          {/* ================= FORMULARIO ================= */}
           <div className="aula-form-section">
             <h3>{editingId ? "Editar Aula" : "Nueva Aula"}</h3>
+
             <form onSubmit={handleSubmit} className="aula-form">
               {error && <div className="form-error">{error}</div>}
 
               <div className="form-group">
-                <label htmlFor="nombre">
+                <label>
                   Nombre del Aula <span className="required">*</span>
                 </label>
                 <input
                   type="text"
-                  id="nombre"
                   name="nombre"
                   value={formData.nombre}
                   onChange={handleChange}
-                  placeholder="Ej: Aula A-101, Virtual 1"
+                  placeholder="Ej: Aula 101"
                   required
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="capacidad">Capacidad (opcional)</label>
+                <label>
+                  Piso <span className="required">*</span>
+                </label>
+                <select
+                  name="piso"
+                  value={formData.piso}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Seleccionar piso</option>
+                  <option value="1">Piso 1</option>
+                  <option value="2">Piso 2</option>
+                  <option value="3">Piso 3</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Capacidad (opcional)</label>
                 <input
                   type="number"
-                  id="capacidad"
                   name="capacidad"
                   value={formData.capacidad}
                   onChange={handleChange}
-                  placeholder="Ej: 30"
+                  placeholder="Ej: 40"
                   min="1"
                 />
               </div>
 
               <div className="form-actions">
                 {editingId && (
-                  <button type="button" className="btn-cancel" onClick={handleCancel}>
+                  <button
+                    type="button"
+                    className="btn-cancel"
+                    onClick={resetForm}
+                  >
                     Cancelar
                   </button>
                 )}
                 <button type="submit" className="btn-submit" disabled={loading}>
-                  {loading ? "Guardando..." : editingId ? "Actualizar" : "Crear Aula"}
+                  {loading
+                    ? "Guardando..."
+                    : editingId
+                    ? "Actualizar Aula"
+                    : "Crear Aula"}
                 </button>
               </div>
             </form>
           </div>
 
-          {/* LISTA DE AULAS */}
+          {/* ================= LISTA ================= */}
           <div className="aula-list-section">
             <h3>Aulas Registradas ({aulas.length})</h3>
+
             <div className="aula-list">
               {aulas.length === 0 ? (
                 <div className="empty-state">
                   <p>No hay aulas registradas</p>
-                  <p className="empty-hint">Crea la primera aula usando el formulario</p>
                 </div>
               ) : (
                 aulas.map((aula) => (
                   <div key={aula.id} className="aula-item">
                     <div className="aula-item-info">
                       <h4>{aula.nombre}</h4>
-                      {aula.capacidad && (
-                        <p className="aula-capacidad">Capacidad: {aula.capacidad} personas</p>
-                      )}
+                      <p>Piso {aula.piso}</p>
+                      <p>Capacidad: {aula.capacidad}</p>
                     </div>
+
                     <div className="aula-item-actions">
                       <button
                         className="btn-edit-small"

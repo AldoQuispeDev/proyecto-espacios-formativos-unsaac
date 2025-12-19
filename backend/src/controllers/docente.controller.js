@@ -1,48 +1,39 @@
 // src/controllers/docente.controller.js
 
-import * as docenteService from "../services/docente.service.js";
+import {
+  crearDocenteService,
+  findAllDocentesService,
+  updateDocenteService,
+  deactivateDocenteService,
+} from "../services/docente.service.js";
 
 // 🔹 POST /api/admin/docentes
 export const crearDocente = async (req, res) => {
   try {
-    const docente = await docenteService.createDocenteService(req.body);
-    // ⚠️ Importante: Ocultar la contraseña incluso si se usa el objeto completo
-    const { password, ...docenteSafe } = docente.usuario; 
-    res.status(201).json({ 
-        message: "Docente creado exitosamente", 
-        data: { ...docenteSafe, especialidad: docente.especialidad } 
-    });
+    const docente = await crearDocenteService(req.body);
+    res.status(201).json(docente);
   } catch (error) {
-    console.error("❌ Error al crear docente:", error.message);
-    // 400 Bad Request si es un error de validación de usuario/negocio
-    res.status(400).json({ error: error.message || "Error al crear docente" });
+    console.error("❌ Error al crear docente:", error);
+    res.status(400).json({ message: error.message });
   }
 };
 
 // 🔹 GET /api/admin/docentes
 export const listarDocentes = async (req, res) => {
   try {
-    const { query, activo } = req.query; 
+    const { query, activo } = req.query;
 
-    // 🛑 CORRECCIÓN: Conversión estricta y segura para el filtro 'activo'.
     let estadoActivo = undefined;
-    if (activo === 'true') {
-      estadoActivo = true;
-    } else if (activo === 'false') {
-      estadoActivo = false;
-    } 
-    // Si activo es undefined o 'all' (no se envía nada), sigue siendo undefined.
-    
-    const busqueda = query || undefined; 
+    if (activo === "true") estadoActivo = true;
+    if (activo === "false") estadoActivo = false;
 
-    // console.log(`DEBUG: Buscando docentes. Query: ${busqueda}, Activo: ${estadoActivo}`); 
-
-    const docentes = await docenteService.findAllDocentesService(busqueda, estadoActivo);
+    const docentes = await findAllDocentesService(query, estadoActivo);
     res.json(docentes);
   } catch (error) {
     console.error("❌ Error CRÍTICO al listar docentes:", error);
-    // 🛑 Es vital que este log interno muestre el error detallado de Prisma.
-    res.status(500).json({ error: "Error interno del servidor al listar docentes." }); 
+    res.status(500).json({
+      message: "Error interno del servidor al listar docentes",
+    });
   }
 };
 
@@ -50,29 +41,33 @@ export const listarDocentes = async (req, res) => {
 export const actualizarDocente = async (req, res) => {
   try {
     const usuarioId = parseInt(req.params.id);
-    // Validar si la conversión falló
     if (isNaN(usuarioId)) {
-        return res.status(400).json({ error: "ID de usuario inválido." });
+      return res.status(400).json({ message: "ID inválido" });
     }
-    const docente = await docenteService.updateDocenteService(usuarioId, req.body);
-    res.json({ message: "Docente actualizado correctamente", data: docente });
+
+    const docente = await updateDocenteService(usuarioId, req.body);
+    res.json({
+      message: "Docente actualizado correctamente",
+      data: docente,
+    });
   } catch (error) {
     console.error("❌ Error al actualizar docente:", error);
-    res.status(400).json({ error: error.message || "Error al actualizar docente" });
+    res.status(400).json({ message: error.message });
   }
 };
 
-// 🔹 DELETE /api/admin/docentes/:id (Desactivación Lógica)
+// 🔹 DELETE /api/admin/docentes/:id (desactivación lógica)
 export const desactivarDocente = async (req, res) => {
   try {
     const usuarioId = parseInt(req.params.id);
     if (isNaN(usuarioId)) {
-        return res.status(400).json({ error: "ID de usuario inválido." });
+      return res.status(400).json({ message: "ID inválido" });
     }
-    await docenteService.deactivateDocenteService(usuarioId);
+
+    await deactivateDocenteService(usuarioId);
     res.json({ message: "Docente desactivado correctamente" });
   } catch (error) {
     console.error("❌ Error al desactivar docente:", error);
-    res.status(500).json({ error: "Error al desactivar docente" });
+    res.status(500).json({ message: "Error al desactivar docente" });
   }
 };

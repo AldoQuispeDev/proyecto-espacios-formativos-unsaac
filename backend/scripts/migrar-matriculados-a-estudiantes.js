@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
  */
 async function migrarMatriculadosAEstudiantes() {
   try {
-    console.log("🚀 Iniciando migración de matriculados aprobados a estudiantes...\n");
+    console.log("Iniciando migración de matriculados aprobados a estudiantes...\n");
 
     // 1. Obtener todas las matrículas aprobadas sin estudiante vinculado
     const matriculasAprobadas = await prisma.matricula.findMany({

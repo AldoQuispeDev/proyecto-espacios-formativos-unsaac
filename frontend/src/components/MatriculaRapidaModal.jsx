@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  obtenerGrupos,
-  obtenerCarrerasPorGrupo,
-} from "../api/catalogos";
 import { crearMatricula } from "../api/matriculas";
 import Icon from "./Icon";
 import "./MatriculaRapidaModal.css";
+import {
+  obtenerGrupos,
+  obtenerGruposCarrera,
+  obtenerCarrerasPorGrupo,
+} from "../api/catalogos";
 
 export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matriculaPendiente }) {
   const navigate = useNavigate();
@@ -20,13 +21,15 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
     telefono: "",
     colegioProcedencia: "",
     grupoId: "",
+    grupoCarreraId: "",
     carreraPrincipalId: "",
     carreraSecundariaId: "",
     tipoPago: "",
     comprobante: null,
   });
 
-  const [grupos, setGrupos] = useState([]);
+  
+
   const [carreras, setCarreras] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -34,10 +37,17 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
   const [comprobantePreview, setComprobantePreview] = useState(null);
   const [matriculaCreada, setMatriculaCreada] = useState(null);
   const [showPagoModal, setShowPagoModal] = useState(false);
-
+  
+  const [grupos, setGrupos] = useState([]);
+  const [gruposCarrera, setGruposCarrera] = useState([]);
+    /* 🔥 FILTRAR GRUPOS POR MODALIDAD SELECCIONADA */
+  const gruposFiltrados = grupos.filter(
+    (g) => g.modalidad?.id === modalidad.id
+  );
   useEffect(() => {
     if (isOpen) {
       fetchGrupos();
+      fetchGruposCarrera();
       
       // Si hay una matrícula pendiente, precargar datos y ir al paso 3
       if (matriculaPendiente) {
@@ -66,10 +76,13 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
   }, [isOpen, matriculaPendiente]);
 
   useEffect(() => {
-    if (formData.grupoId) {
-      fetchCarreras(formData.grupoId);
+    if (!formData.grupoCarreraId) {
+      setCarreras([]);
+      return;
     }
-  }, [formData.grupoId]);
+
+    fetchCarreras(formData.grupoCarreraId);
+  }, [formData.grupoCarreraId]);
 
   const fetchGrupos = async () => {
     try {
@@ -78,6 +91,14 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
     } catch (err) {
       console.error("Error al cargar grupos:", err);
       setError("Error al cargar los grupos");
+    }
+  };
+  const fetchGruposCarrera = async () => {
+    try {
+      const res = await obtenerGruposCarrera();
+      setGruposCarrera(res.data);
+    } catch (err) {
+      console.error("Error al cargar grupos de carrera:", err);
     }
   };
 
@@ -431,7 +452,9 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
         {step === 2 && (
           <div className="matricula-rapida-body">
             <h3>Datos Académicos</h3>
+
             <div className="form-grid-1">
+              {/* GRUPO ACADÉMICO */}
               <div className="form-group">
                 <label>
                   Grupo <span className="required">*</span>
@@ -443,14 +466,35 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
                   required
                 >
                   <option value="">Seleccionar grupo</option>
-                  {grupos.map((grupo) => (
+                  {gruposFiltrados.map((grupo) => (
                     <option key={grupo.id} value={grupo.id}>
-                      Grupo {grupo.nombre}
+                      Grupo {grupo.letra}
                     </option>
                   ))}
                 </select>
               </div>
 
+              {/* ÁREA / GRUPO DE CARRERAS */}
+              <div className="form-group">
+                <label>
+                  Área / Grupo de Carreras <span className="required">*</span>
+                </label>
+                <select
+                  name="grupoCarreraId"
+                  value={formData.grupoCarreraId}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Seleccionar área</option>
+                  {gruposCarrera.map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.codigo} – {g.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* CARRERA PRINCIPAL */}
               {carreras.length > 0 && (
                 <>
                   <div className="form-group">
@@ -463,7 +507,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
                       onChange={handleChange}
                       required
                     >
-                      <option value="">Seleccionar carrera principal</option>
+                      <option value="">Seleccionar carrera</option>
                       {carreras.map((carrera) => (
                         <option key={carrera.id} value={carrera.id}>
                           {carrera.nombre}
@@ -472,6 +516,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
                     </select>
                   </div>
 
+                  {/* CARRERA SECUNDARIA */}
                   <div className="form-group">
                     <label>Carrera Secundaria (opcional)</label>
                     <select
@@ -480,22 +525,33 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
                       onChange={handleChange}
                     >
                       <option value="">Seleccionar segunda opción</option>
-                      {carreras.map((carrera) => (
-                        <option key={carrera.id} value={carrera.id}>
-                          {carrera.nombre}
-                        </option>
-                      ))}
+                      {carreras
+                        .filter(
+                          (c) => c.id !== Number(formData.carreraPrincipalId)
+                        )
+                        .map((carrera) => (
+                          <option key={carrera.id} value={carrera.id}>
+                            {carrera.nombre}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 </>
               )}
 
+              {/* TIPO DE PAGO */}
               <div className="form-group">
                 <label>
                   Tipo de Pago <span className="required">*</span>
                 </label>
+
                 <div className="tipo-pago-options">
-                  <label className={`radio-option-card ${formData.tipoPago === "Efectivo" ? "selected" : ""}`}>
+                  {/* EFECTIVO */}
+                  <label
+                    className={`radio-option-card ${
+                      formData.tipoPago === "Efectivo" ? "selected" : ""
+                    }`}
+                  >
                     <input
                       type="radio"
                       name="tipoPago"
@@ -504,7 +560,9 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
                       onChange={handleChange}
                     />
                     <div className="radio-card-content">
-                      <span className="radio-icon"><Icon name="cash" size="lg" /></span>
+                      <span className="radio-icon">
+                        <Icon name="cash" size="lg" />
+                      </span>
                       <span className="radio-title">Efectivo</span>
                       <span className="radio-description">
                         Acérquese a oficina, pague el monto que eligió y pida la boleta
@@ -512,7 +570,12 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
                     </div>
                   </label>
 
-                  <label className={`radio-option-card ${formData.tipoPago === "Transferencia" ? "selected" : ""}`}>
+                  {/* TRANSFERENCIA */}
+                  <label
+                    className={`radio-option-card ${
+                      formData.tipoPago === "Transferencia" ? "selected" : ""
+                    }`}
+                  >
                     <input
                       type="radio"
                       name="tipoPago"
@@ -521,17 +584,24 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
                       onChange={handleChange}
                     />
                     <div className="radio-card-content">
-                      <span className="radio-icon"><Icon name="bank" size="lg" /></span>
+                      <span className="radio-icon">
+                        <Icon name="bank" size="lg" />
+                      </span>
                       <span className="radio-title">Transferencia</span>
                       <span className="radio-description">
-                        <strong>Banco:</strong> BCP<br />
-                        <strong>Cuenta:</strong> 123-456789-0-12<br />
+                        <strong>Banco:</strong> BCP <br />
+                        <strong>Cuenta:</strong> 123-456789-0-12 <br />
                         <strong>Titular:</strong> Academia Pre Universitaria
                       </span>
                     </div>
                   </label>
 
-                  <label className={`radio-option-card ${formData.tipoPago === "Yape/Plin" ? "selected" : ""}`}>
+                  {/* YAPE / PLIN */}
+                  <label
+                    className={`radio-option-card ${
+                      formData.tipoPago === "Yape/Plin" ? "selected" : ""
+                    }`}
+                  >
                     <input
                       type="radio"
                       name="tipoPago"
@@ -540,10 +610,12 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
                       onChange={handleChange}
                     />
                     <div className="radio-card-content">
-                      <span className="radio-icon"><Icon name="phone" size="lg" /></span>
-                      <span className="radio-title">Yape/Plin</span>
+                      <span className="radio-icon">
+                        <Icon name="phone" size="lg" />
+                      </span>
+                      <span className="radio-title">Yape / Plin</span>
                       <span className="radio-description">
-                        <strong>Número:</strong> 999 999 999<br />
+                        <strong>Número:</strong> 999 999 999 <br />
                         <strong>Nombre:</strong> Academia Pre
                       </span>
                     </div>
@@ -553,6 +625,7 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
             </div>
           </div>
         )}
+
 
         {/* Step 3: Confirmación */}
         {step === 3 && (
@@ -871,5 +944,6 @@ export default function MatriculaRapidaModal({ isOpen, onClose, modalidad, matri
         </div>
       )}
     </div>
+    
   );
 }

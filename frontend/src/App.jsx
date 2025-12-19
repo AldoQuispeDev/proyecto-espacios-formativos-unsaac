@@ -19,7 +19,7 @@ import GestionDocentes from "./pages/admin/GestionDocentes";
 import GestionEstudiantes from "./pages/admin/GestionEstudiantes";
 import GestionCatalogos from "./pages/admin/GestionCatalogos";
 import GestionHorarios from "./pages/admin/GestionHorarios";
-
+import PanelDocente from "./pages/docente/PanelDocente";
 import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {
@@ -61,7 +61,7 @@ export default function App() {
             path="/docente/panel"
             element={
               <PrivateRoute role="DOCENTE">
-                <h1>Panel Docente (En construcción)</h1>
+                <PanelDocente />
               </PrivateRoute>
             }
           />

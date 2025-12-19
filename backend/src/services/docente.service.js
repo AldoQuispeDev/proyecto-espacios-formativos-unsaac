@@ -1,30 +1,81 @@
 // src/services/docente.service.js
 
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 import * as DocenteModel from "../models/docente.model.js";
 
-// ------------------------------------------------------------------
-// Lógica de Negocio (Service)
-// ------------------------------------------------------------------
+const prisma = new PrismaClient();
 
-export async function createDocenteService(data) {
-  // Aquí puedes añadir reglas de negocio antes de llamar al model
-  // Ejemplo: Validar que la especialidad no esté vacía si el rol es DOCENTE.
-  if (!data.especialidad) {
-    throw new Error("La especialidad es obligatoria para el Docente.");
+// 🔹 CREAR DOCENTE (crea Usuario + Docente)
+export const crearDocenteService = async (data) => {
+  const {
+    nombre,
+    apellidoPaterno,
+    apellidoMaterno,
+    dni,
+    correo,
+    celular,
+    password,
+    especialidad,
+  } = data;
+
+  // 1️⃣ Validar duplicados
+  const existe = await prisma.usuario.findFirst({
+    where: {
+      OR: [{ dni }, { correo }],
+    },
+  });
+
+  if (existe) {
+    throw new Error("Ya existe un usuario con ese DNI o correo");
   }
-  return DocenteModel.createDocenteModel(data);
-}
 
-export async function findAllDocentesService(query, activo) {
+  // 2️⃣ Hash de contraseña
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  // 3️⃣ Transacción Usuario + Docente
+  const resultado = await prisma.$transaction(async (tx) => {
+    const usuario = await tx.usuario.create({
+      data: {
+        nombre,
+        apellidoPaterno,
+        apellidoMaterno,
+        dni,
+        correo,
+        celular,
+        password: passwordHash,
+        rol: "DOCENTE",
+        activo: true,
+      },
+    });
+
+    const docente = await tx.docente.create({
+      data: {
+        usuarioId: usuario.id,
+        especialidad: especialidad || null,
+      },
+      include: {
+        usuario: true,
+      },
+    });
+
+    return docente;
+  });
+
+  return resultado;
+};
+
+// 🔹 LISTAR DOCENTES
+export const findAllDocentesService = async (query, activo) => {
   return DocenteModel.findAllDocentesModel(query, activo);
-}
+};
 
-export async function updateDocenteService(usuarioId, data) {
-  // Aquí podrías añadir lógica para validar si el Docente puede ser editado.
+// 🔹 ACTUALIZAR DOCENTE
+export const updateDocenteService = async (usuarioId, data) => {
   return DocenteModel.updateDocenteModel(usuarioId, data);
-}
+};
 
-export async function deactivateDocenteService(usuarioId) {
-  // Aquí se verifica si tiene clases activas (lógica de negocio futura)
+// 🔹 DESACTIVAR DOCENTE
+export const deactivateDocenteService = async (usuarioId) => {
   return DocenteModel.deactivateDocenteModel(usuarioId);
-}
+};

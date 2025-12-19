@@ -16,6 +16,7 @@ import estudiantesRoutes from "./routes/estudiantes.routes.js";
 import modalidadesRoutes from "./routes/modalidades.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import horariosRoutes from "./routes/horarios.routes.js";
+
 const app = express();
 
 // Middleware general
